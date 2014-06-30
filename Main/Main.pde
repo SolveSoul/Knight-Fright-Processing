@@ -3,6 +3,7 @@ import java.util.Calendar;
 
 //fields
 JMyron m;
+AppState state = AppState.WEBCAM;
 
 float camWidth = 640;
 float camHeight = 480;
@@ -19,6 +20,12 @@ void setup(){
 }
 
 void draw(){
+  if(state == AppState.WEBCAM){
+    drawCamera();
+  }
+}
+
+void drawCamera(){
   m.update();//update the camera view
   m.imageCopy(pixels);//draw image to stage
   updatePixels();
