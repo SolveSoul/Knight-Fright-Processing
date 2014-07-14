@@ -27,6 +27,7 @@ void draw() {
 
   background(177);
 
+  println("Dit is een test");
   if (state == AppState.WEBCAM) {
     //drawCamera();
   } else if (state == AppState.MAINMENU) {
