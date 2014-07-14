@@ -1,5 +1,6 @@
 enum AppState{
   WEBCAM,
   GAME,
-  MAINMENU
+  MAINMENU,
+  DIFFICULTYMENU
 }
