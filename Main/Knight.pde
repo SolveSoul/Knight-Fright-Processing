@@ -29,7 +29,7 @@ class Knight {
   }
 
   // METHODS
-
+  
   private void gravity()
   {
     speedY += 0.2;
