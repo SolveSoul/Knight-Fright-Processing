@@ -141,6 +141,20 @@ void indicateTime() {
   }
 }
 
+void mouseDragged(){
+  for (int i = 0; i < knightArray.size(); i++)
+  {
+    Knight myFruit = (Knight) knightArray.get(i);
+    if (dist(myFruit.getX(), myFruit.getY(), mouseX, mouseY) < myFruit.getRadius())
+    {
+      myFruit.setAppleString("appleCut.png");
+      myFruit.setApple(loadImage("appleCut.png"));
+      pointCounter++;
+    }
+  }
+}
+
+
 void mousePressed() {
   if (state == AppState.WEBCAM) {
     Calendar cal = Calendar.getInstance();
