@@ -38,7 +38,6 @@ void setup() {
 
   startTime = System.currentTimeMillis();
   counterTime = System.currentTimeMillis();
-
 }
 
 void draw() {
@@ -51,7 +50,7 @@ void draw() {
     drawMainMenu();
   } else if (state == AppState.DIFFICULTYMENU) {
     drawDifficultyMenu();
-  } else if(state == AppState.GAME){
+  } else if (state == AppState.GAME) {
     drawGame();
   }
 }
@@ -71,7 +70,7 @@ void drawDifficultyMenu() {
   }
 }
 
-void drawGame(){
+void drawGame() {
   //score tekenen
   textAlign(LEFT);
   fill(#ffffff);
@@ -79,29 +78,29 @@ void drawGame(){
   text("Score: " + pointCounter, 25, 45);
 
   indicateTime();
-  
-  if(timer%100 ==0){
+
+  if (timer%100 ==0) {
     System.gc();
   }
-  
-  if(timer!=0){
-    if(timer % 1800 == 0){
+
+  if (timer!=0) {
+    if (timer % 1800 == 0) {
       println("GEDAAN");
       //level complete
     }
   }
-  
+
   timer++;
-  
+
   if (System.currentTimeMillis() - counterTime > appearanceTime)
   {
     Knight myFruit = new Knight(random(width), random(height, height - 100));
     knightArray.add(myFruit);
     counterTime = System.currentTimeMillis();
   }
-  
+
   Iterator i = knightArray.iterator();
-  while (i.hasNext()) {
+  while (i.hasNext ()) {
     Knight knight = (Knight) i.next();
     knight.run();
     if (knight.y > height && !knight.getAppleString().equals("appleCut.png")) {
@@ -110,19 +109,35 @@ void drawGame(){
   }
 }
 
-void indicateTime(){
- 
+void indicateTime() {
+
   stroke(144, 144, 144);
   strokeWeight(3);
   rectMode(CORNER);
   fill(144, 144, 144);
   rect(width - 40, 20, 20, 180);
 
-  fill(85, 172, 238, 180);
+ // fill(85, 172, 238, 180);
+  fill(#458B00);
   rect(width - 40, 20, 20, rectHeight);
   noStroke();
+
+
   if (timer % 10 == 0) {
     rectHeight--;
+    println(rectHeight);
+  }
+  
+  if(timer % 1800 > 1000){
+    fill(#FF7F00);
+    rect(width - 40, 20, 20, rectHeight);
+    noStroke();
+  }
+  
+  if (timer %1800 > 1520) {
+    fill(#B20000);
+    rect(width - 40, 20, 20, rectHeight);
+    noStroke();
   }
 }
 
