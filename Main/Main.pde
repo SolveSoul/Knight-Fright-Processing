@@ -18,10 +18,10 @@ int rectHeight = 180;
 ArrayList knightArray = new ArrayList();
 int pointCounter = 0;
 int currentLvl = 1;
+int lives = 3;
 int timer;
 //hoe hoger, hoe trager de ridders komen
 int appearanceTime = 500;
-
 
 long startTime;
 long counterTime;
@@ -52,6 +52,10 @@ void draw() {
     drawDifficultyMenu();
   } else if (state == AppState.GAME) {
     drawGame();
+  } else if (state == AppState.GAMEOVER){
+    drawGameOver();
+  } else if(state == AppState.LEVELCOMPLETE){
+    draweLevelComplete();
   }
 }
 
@@ -71,12 +75,22 @@ void drawDifficultyMenu() {
 }
 
 void drawGame() {
-  //score tekenen
+  
+  //leventjes
+  if(lives == 0){
+    state = AppState.GAMEOVER;
+  }
+  
+  livesChanged(false);
+  
+  //score tekenen + leventjes
   textAlign(LEFT);
   fill(#ffffff);
   textSize(25);
   text("Score: " + pointCounter, 25, 45);
-
+  text("Lives: " + lives, 25, 70);
+  
+  //alles ivm de timer
   indicateTime();
 
   if (timer%100 ==0) {
@@ -85,17 +99,16 @@ void drawGame() {
 
   if (timer!=0) {
     if (timer % 1800 == 0) {
-      println("GEDAAN");
-      //level complete
+      state = AppState.LEVELCOMPLETE;
     }
   }
-
   timer++;
 
+  //ridders tonen
   if (System.currentTimeMillis() - counterTime > appearanceTime)
   {
-    Knight myFruit = new Knight(random(width), random(height, height - 100));
-    knightArray.add(myFruit);
+    Knight myKnight = new Knight(random(width), random(height, height - 100));
+    knightArray.add(myKnight);
     counterTime = System.currentTimeMillis();
   }
 
@@ -103,8 +116,9 @@ void drawGame() {
   while (i.hasNext ()) {
     Knight knight = (Knight) i.next();
     knight.run();
-    if (knight.y > height && !knight.getAppleString().equals("appleCut.png")) {
+    if (knight.y > height && !knight.getKnightString().equals("appleCut.png")) {
       i.remove();
+      livesChanged(true);
     }
   }
 }
@@ -117,15 +131,12 @@ void indicateTime() {
   fill(144, 144, 144);
   rect(width - 40, 20, 20, 180);
 
- // fill(85, 172, 238, 180);
   fill(#458B00);
   rect(width - 40, 20, 20, rectHeight);
   noStroke();
 
-
   if (timer % 10 == 0) {
     rectHeight--;
-    println(rectHeight);
   }
   
   if(timer % 1800 > 1000){
@@ -141,14 +152,30 @@ void indicateTime() {
   }
 }
 
+//leventjes aanpassen
+void livesChanged(boolean decreaseLives) {
+  if (decreaseLives) {
+    lives--;
+  }
+}
+void draweLevelComplete(){
+  text("complete",width/2,height/2);
+  knightArray.clear();
+}
+
+void drawGameOver(){
+  text("game over",width/2,height/2);
+  knightArray.clear();
+}
+
 void mouseDragged(){
   for (int i = 0; i < knightArray.size(); i++)
   {
-    Knight myFruit = (Knight) knightArray.get(i);
-    if (dist(myFruit.getX(), myFruit.getY(), mouseX, mouseY) < myFruit.getRadius())
+    Knight myKnight = (Knight) knightArray.get(i);
+    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius())
     {
-      myFruit.setAppleString("appleCut.png");
-      myFruit.setApple(loadImage("appleCut.png"));
+      myKnight.setKnightString("appleCut.png");
+      myKnight.setKnight(loadImage("appleCut.png"));
       pointCounter++;
     }
   }

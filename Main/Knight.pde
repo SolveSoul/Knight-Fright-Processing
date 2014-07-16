@@ -13,9 +13,9 @@ class Knight {
   private float speedY = 0;
   
   private float r = 0;
-  private PImage apple;
+  private PImage knight;
   private float deg;
-  private String appleString;
+  private String knightString;
 
   // CONSTRUCTOR
   public Knight(float _x, float _y){
@@ -24,8 +24,8 @@ class Knight {
     speedX = random(-2, 2);
     speedY = random(-15, -10);
     r = 50;
-    appleString = "apple.png";
-    apple = loadImage("apple.png");
+    knightString = "apple.png";
+    knight = loadImage("apple.png");
   }
 
   // METHODS
@@ -35,20 +35,20 @@ class Knight {
     speedY += 0.2;
   }
 
-  public void setAppleString(String appleString) {
-    this.appleString = appleString;
+  public void setKnightString(String knightString) {
+    this.knightString = knightString;
   }
 
-  public String getAppleString() {
-    return this.appleString;
+  public String getKnightString() {
+    return this.knightString;
   }
 
-  public void setApple(PImage apple) {
-    this.apple = apple;
+  public void setKnight(PImage knight) {
+    this.knight = knight;
   }
 
-  public PImage getApple() {
-    return this.apple;
+  public PImage getKnight() {
+    return this.knight;
   }
 
   public float getX() {
@@ -93,7 +93,7 @@ class Knight {
   
   public void display()
   {
-    image(apple, x, y);
+    image(knight, x, y);
   }
 }
 
