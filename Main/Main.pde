@@ -186,7 +186,7 @@ void drawHiscores(){
   
   if(scores.size() != 0){
     for(int i = 0; i < scores.size(); i++){
-      text(i, (width/2 - 50), (50 + (i*15)));
+      text(i + 1, (width/2 - 50), (50 + (i*15)));
       text(scores.get(i).getName(), width/2, (50 + (i*15)));
       text(scores.get(i).getScore(), width/2 + 50, (50 + (i*15)));
     }
