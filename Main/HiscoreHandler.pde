@@ -16,6 +16,7 @@ class HiscoreHandler {
   
   //getters & setters
   private ArrayList<HiscoreEntry> getHiscores(){
+    this.entries.clear();
     loadHiscores();
     sortHiscores();
     return this.entries;

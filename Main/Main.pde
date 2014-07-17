@@ -18,6 +18,7 @@ float camHeight = 480;
 Difficulty diff;
 ArrayList<LeapButton> bGroup = new ArrayList<LeapButton>();
 LeapButton startGame;
+LeapButton btnHiscores;
 
 //Game fields
 int rectHeight = 180;
@@ -31,6 +32,10 @@ int appearanceTime = 500;    //the higher this field, the slower the knights spa
 long startTime;
 long counterTime;
 
+//hiscores
+ArrayList<HiscoreEntry> scores;
+HiscoreHandler hh;
+LeapButton btnBackToMenu;
 
 /*
 =================================
@@ -52,11 +57,17 @@ void setup() {
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 20, 150, 60, "Medium"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 90, 150, 60, "Hard"));
   startGame = new LeapButton(width/2 - 90, height/2 - 120, 180, 60, "Start game");
+  btnHiscores = new LeapButton(width - 70, height - 60, 60, 50, "hiscores");
   changeDifficulty(Difficulty.MEDIUM);
 
   //game settings
   startTime = System.currentTimeMillis();
   counterTime = System.currentTimeMillis();
+  
+  //scores
+  hh = new HiscoreHandler();
+  scores = hh.getHiscores();
+  btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
 }
 
 void draw() {
@@ -78,6 +89,7 @@ void draw() {
     drawLeapCursor();
   } else if(state == AppState.HISCORES){
     drawHiscores();
+    drawLeapCursor();
   }
 }
 
@@ -95,6 +107,7 @@ void drawMainMenu() {
 
   //draw start button  
   startGame.display();
+  btnHiscores.display();
 
   //draw difficultybuttons
   for (LeapButton l : bGroup) {
@@ -163,7 +176,24 @@ void drawGameOver() {
 }
 
 void drawHiscores(){
-  //will consist of "back button" that returns to the main menu and list of hiscores (max 10)
+  
+  btnBackToMenu.display();
+  
+  //auto refresh every 1500 secs
+  if(millis() % 1500 == 0){
+    scores = hh.getHiscores();
+  }
+  
+  if(scores.size() != 0){
+    for(int i = 0; i < scores.size(); i++){
+      text(i, (width/2 - 50), (50 + (i*15)));
+      text(scores.get(i).getName(), width/2, (50 + (i*15)));
+      text(scores.get(i).getScore(), width/2 + 50, (50 + (i*15)));
+    }
+  } else {
+    text("No scores available yet!", width/2, height/2);
+  }
+
 }
 
 /*
@@ -271,7 +301,8 @@ void mousePressed() {
     String filename = cal.getTime().toString().replace(":", "") + ".png";
     saveFrame(filename);
   } else if (state == AppState.MAINMENU) {
-
+    
+    //the most dirty code you'll ever see of your life
     for (LeapButton l : bGroup) {
       if (mouseX > l.bX && mouseX < l.bX + l.bWidth && mouseY > l.bY && mouseY < l.bY + l.bHeight) {
         if (l.getLabelText().toLowerCase().equals("easy")) {
@@ -284,8 +315,19 @@ void mousePressed() {
       }
     }
 
+    //start game button
     if (mouseX > startGame.bX && mouseX < startGame.bX + startGame.bWidth && mouseY > startGame.bY && mouseY < startGame.bY + startGame.bHeight) {
       state = AppState.GAME;
+    }
+    
+    //check hiscores button
+    if (mouseX > btnHiscores.bX && mouseX < btnHiscores.bX + btnHiscores.bWidth && mouseY > btnHiscores.bY && mouseY < btnHiscores.bY + btnHiscores.bHeight) {
+      state = AppState.HISCORES;
+    }    
+  } else if(state == AppState.HISCORES){
+    //go back to menu from hiscores button 
+    if (mouseX > btnBackToMenu.bX && mouseX < btnBackToMenu.bX + btnBackToMenu.bWidth && mouseY > btnBackToMenu.bY && mouseY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
+      state = AppState.MAINMENU;
     }
   }
 }
@@ -313,7 +355,6 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
 void keyPressed(){
  /*
- HiscoreHandler hh = new HiscoreHandler();
  HiscoreEntry e = new HiscoreEntry("JAN", 21000);
  hh.saveHiscore(e);
  */
