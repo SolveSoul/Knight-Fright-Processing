@@ -1,7 +1,7 @@
 /*
 Custom buttons that'll work with the LeapMotion.
- The isSelected property indicates whether or not the button can be selected with a stroke highlight.
- */
+The isSelected property indicates whether or not the button can be selected with a stroke highlight.
+*/
 
 class LeapButton {
 
@@ -34,6 +34,10 @@ class LeapButton {
   public boolean getIsSelected() {
     return this.isSelected;
   }
+  
+  public String getLabelText() {
+    return this.labelText;
+  }
 
   public void setStrokeColor(int thickness) {
     this.strokeThickness = thickness;
@@ -53,7 +57,7 @@ class LeapButton {
 
   public void display() {
 
-    rectMode(CENTER);
+    //rectMode(CENTER);
     textAlign(CENTER);
 
     if (isSelected) {
@@ -65,11 +69,11 @@ class LeapButton {
     rect(bX, bY, bWidth, bHeight);
 
     fill(labelColor);
-    text(labelText, bX, bY);
+    text(labelText, bX + bWidth/2, bY + bHeight/2);
 
     noStroke();
     textAlign(CORNER);
-    rectMode(CORNER);
+    //rectMode(CORNER);
   }
 
   @Override
