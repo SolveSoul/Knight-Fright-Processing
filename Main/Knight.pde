@@ -1,24 +1,23 @@
 /*
-
-This class represents the objects that will be able to be cut by the sword.
-
-*/
+ Based upon the code of Jose Salvatierra, thanks!
+ This class represents the objects that will be able to be cut by the sword.
+ */
 
 class Knight {
 
-  // INSTANCE VARIABLES
+  //fields
   private float x = 0;
   public float y = 0;
   private float speedX = 0;
   private float speedY = 0;
-  
+
   private float r = 0;
   private PImage knight;
   private float deg;
   private String knightString;
 
-  // CONSTRUCTOR
-  public Knight(float _x, float _y){
+  //ctor
+  public Knight(float _x, float _y) {
     x = _x;
     y = _y;
     speedX = random(-2, 2);
@@ -28,13 +27,7 @@ class Knight {
     knight = loadImage("apple.png");
   }
 
-  // METHODS
-  
-  private void gravity()
-  {
-    speedY += 0.2;
-  }
-
+  //getters & setters
   public void setKnightString(String knightString) {
     this.knightString = knightString;
   }
@@ -63,17 +56,20 @@ class Knight {
     return this.r;
   }
 
-  public void run()
-  {
+
+  //main logic
+  public void run() {
     display();
     move();
     bounce();
     gravity();
   }
 
+  private void gravity(){
+    speedY += 0.2;
+  }
 
-  private void bounce()
-  {
+  private void bounce(){
     if ((x >= width - r && speedX > 0) || (x < r && speedX < 0))
     {
       speedX = speedX * (-1);
@@ -85,14 +81,12 @@ class Knight {
   }
 
 
-  private void move()
-  {
+  private void move(){
     x += speedX;
     y += speedY;
   }
-  
-  public void display()
-  {
+
+  public void display(){
     image(knight, x, y);
   }
 }

@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 //general fields
-AppState state = AppState.WEBCAM;
+AppState state = AppState.MAINMENU;
 LeapMotionP5 leap;
 
 //webcam fields
@@ -30,6 +30,7 @@ int appearanceTime = 500;    //the higher this field, the slower the knights spa
 
 long startTime;
 long counterTime;
+
 
 /*
 =================================
@@ -75,6 +76,8 @@ void draw() {
   } else if (state == AppState.LEVELCOMPLETE) {
     draweLevelComplete();
     drawLeapCursor();
+  } else if(state == AppState.HISCORES){
+    drawHiscores();
   }
 }
 
@@ -157,6 +160,10 @@ void draweLevelComplete() {
 void drawGameOver() {
   text("game over", width/2, height/2);
   knightArray.clear();
+}
+
+void drawHiscores(){
+  //will consist of "back button" that returns to the main menu and list of hiscores (max 10)
 }
 
 /*
@@ -302,4 +309,12 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       break;
     }
   }
+}
+
+void keyPressed(){
+ /*
+ HiscoreHandler hh = new HiscoreHandler();
+ HiscoreEntry e = new HiscoreEntry("JAN", 21000);
+ hh.saveHiscore(e);
+ */
 }

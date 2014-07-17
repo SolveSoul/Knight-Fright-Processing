@@ -7,10 +7,13 @@ class TwitterHandler {
   private String apiConsumerKeySecret;
   private String accessToken;
   private String accessTokenSecret;
+  
+  //fields
+  private Twitter twitter;
+  private static final String FILENAME = "twitterkeys.csv";
 
-  Twitter twitter;
-
-  TwitterHandler() {
+  //ctor
+  public TwitterHandler() {
 
     boolean success = getApiKeys();
 
@@ -26,7 +29,7 @@ class TwitterHandler {
       TwitterFactory tf = new TwitterFactory(cb.build());
       twitter = tf.getInstance();
     } else {
-      println("Could not load the apikeys, are you missing the twitterkeys.csv file?");
+      println("Could not load the apikeys, are you missing the " + FILENAME + " file?");
     }
   }
 
@@ -45,7 +48,7 @@ class TwitterHandler {
   public boolean getApiKeys() {
     
     //Input file which needs to be parsed
-    String fileToParse = dataPath("twitterkeys.csv");
+    String fileToParse = dataPath(FILENAME);
     BufferedReader fileReader = null;
 
     //Delimiter used in CSV file

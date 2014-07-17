@@ -43,7 +43,7 @@ class LeapButton {
     this.strokeThickness = thickness;
   }
 
-  LeapButton(float bX, float bY, float bWidth, float bHeight, String labelText) {
+  public LeapButton(float bX, float bY, float bWidth, float bHeight, String labelText) {
     this.bWidth = bWidth;
     this.bHeight = bHeight;
     this.bX = bX;
