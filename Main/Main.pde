@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 //general fields
-AppState state = AppState.MAINMENU;
+AppState state = AppState.WEBCAM;
 LeapMotionP5 leap;
 
 //webcam fields
@@ -303,12 +303,3 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     }
   }
 }
-
-/*
-//Uncomment if you want to test Twitter...
-void keyPressed()
-{
-    TwitterHandler th = new TwitterHandler();
-    th.tweetScore(7900);
-}
-*/

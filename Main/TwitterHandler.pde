@@ -30,9 +30,12 @@ class TwitterHandler {
     }
   }
 
-  public void tweetScore(int score) {
+  public void tweetScore(int score, String imageName) {
     try {
-      Status status = twitter.updateStatus("I just scored " + score + " on game X. Can you do better?");
+      StatusUpdate status = new StatusUpdate("I just scored " + score + " on game X. Can you do better?");
+      File img = new File(sketchPath(imageName));
+      status.setMedia(img);
+      twitter.updateStatus(status);
     } 
     catch (TwitterException ex) {
       println("Error: " + ex.getMessage());
