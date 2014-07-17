@@ -56,8 +56,6 @@ class LeapButton {
   }
 
   public void display() {
-
-    //rectMode(CENTER);
     textAlign(CENTER);
 
     if (isSelected) {
@@ -73,7 +71,6 @@ class LeapButton {
 
     noStroke();
     textAlign(CORNER);
-    //rectMode(CORNER);
   }
 
   @Override

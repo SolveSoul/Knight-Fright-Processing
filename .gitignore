@@ -1,3 +1,6 @@
+#Setting files + apikeys
+*.csv
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
