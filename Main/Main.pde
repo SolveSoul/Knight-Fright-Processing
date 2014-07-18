@@ -1,5 +1,3 @@
-//TODO: find a working webcam lib
-
 import com.onformative.leap.*;
 import com.leapmotion.leap.*;
 
@@ -79,7 +77,7 @@ void setup() {
 
 void draw() {
 
-  //background(177);
+  background(177);
 
   if (state == AppState.WEBCAM) {
     drawCamera();
@@ -100,9 +98,6 @@ void draw() {
   }
 }
 
-void stop(){
-  webcam.stopCam();
-}
 /*=================================
  Processing draw methods
 =================================
@@ -306,9 +301,16 @@ void mouseDragged() {
 
 void mousePressed() {
   if (state == AppState.WEBCAM) {
+    
+    //save the image
     Calendar cal = Calendar.getInstance();
     String filename = cal.getTime().toString().replace(":", "") + ".png";
     saveFrame(filename);
+    
+    //tweet the image
+    TwitterHandler th = new TwitterHandler();
+    th.tweetScore(666, filename);
+    
   } else if (state == AppState.MAINMENU) {
     
     //the most dirty code you'll ever see of your life

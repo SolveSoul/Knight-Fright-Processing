@@ -35,7 +35,7 @@ class TwitterHandler {
 
   public void tweetScore(int score, String imageName) {
     try {
-      StatusUpdate status = new StatusUpdate("I just scored " + score + " on game X. Can you do better?");
+      StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do better?");
       File img = new File(sketchPath(imageName));
       status.setMedia(img);
       twitter.updateStatus(status);
