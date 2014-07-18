@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 //general fields
-AppState state = AppState.MAINMENU;
+AppState state = AppState.WEBCAM;
 LeapMotionP5 leap;
 
 //webcam fields
@@ -36,6 +36,9 @@ long counterTime;
 ArrayList<HiscoreEntry> scores;
 HiscoreHandler hh;
 LeapButton btnBackToMenu;
+
+//webcam
+WebcamHandler webcam;
 
 /*
 =================================
@@ -68,14 +71,18 @@ void setup() {
   hh = new HiscoreHandler();
   scores = hh.getHiscores();
   btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
+  
+  //webcam
+  webcam = new WebcamHandler(this);
+  
 }
 
 void draw() {
 
-  background(177);
+  //background(177);
 
   if (state == AppState.WEBCAM) {
-    //drawCamera();
+    drawCamera();
   } else if (state == AppState.MAINMENU) {
     drawMainMenu();
     drawLeapCursor();
@@ -93,14 +100,16 @@ void draw() {
   }
 }
 
-
-/*
-=================================
+void stop(){
+  webcam.stopCam();
+}
+/*=================================
  Processing draw methods
 =================================
 */
 
 void drawCamera() {
+  webcam.drawCam();
 }
 
 void drawMainMenu() {
