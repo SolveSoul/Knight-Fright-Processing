@@ -308,8 +308,8 @@ void mousePressed() {
     saveFrame(filename);
     
     //tweet the image
-    TwitterHandler th = new TwitterHandler();
-    th.tweetScore(666, filename);
+    Thread tweet = new Thread(new TwitterHandler(799, filename));
+    tweet.start();
     
   } else if (state == AppState.MAINMENU) {
     

@@ -1,6 +1,6 @@
 import java.io.FileReader;
 
-class TwitterHandler {
+class TwitterHandler implements Runnable {
 
   //tokens
   private String apiConsumerKey;
@@ -11,12 +11,17 @@ class TwitterHandler {
   //fields
   private Twitter twitter;
   private static final String FILENAME = "twitterkeys.csv";
+  
+  private int score;
+  private String imageName;
 
   //ctor
-  public TwitterHandler() {
+  public TwitterHandler(int score, String imageName) {
 
     boolean success = getApiKeys();
-
+    this.score = score;
+    this.imageName = imageName;
+    
     if (success) {
       //configure
       ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -33,7 +38,11 @@ class TwitterHandler {
     }
   }
 
-  public void tweetScore(int score, String imageName) {
+  public void run(){
+    tweetScore();
+  }
+
+  public void tweetScore() {
     try {
       StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do better?");
       File img = new File(sketchPath(imageName));
