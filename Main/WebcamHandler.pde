@@ -4,7 +4,7 @@ class WebcamHandler {
 
   //fields
   private final String acerName = "name=1.3M HD WebCam,size=640x480,fps=30";    //Acer Crystal Eye Webcam
-  private final String hpName = "<insert hp name here>";
+  private final String hpName = "name=HP HD Webcam [Fixed],size=640x480,fps=30"; //HP webcam
   private boolean isCamAvailable;
   private Capture cam;
 
@@ -41,10 +41,10 @@ class WebcamHandler {
   
   //methods
   public void drawCam() {
-    if (cam.available()) {
+    if (cam != null && cam.available()) {
       cam.read();
     }
-    image(cam, 0, 0);
+          image(cam, 0, 0);
   }
   
   private void printAllWebcams(){

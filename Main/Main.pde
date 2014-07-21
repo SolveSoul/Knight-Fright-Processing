@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 //general fields
-AppState state = AppState.WEBCAM;
+AppState state = AppState.MAINMENU;
 LeapMotionP5 leap;
 
 //webcam fields
@@ -162,7 +162,7 @@ void drawGame() {
   while (i.hasNext ()) {
     Knight knight = (Knight) i.next();
     knight.run();
-    if (knight.y > height && !knight.getKnightString().equals("appleCut.png")) {
+    if (knight.y > height && !knight.getIsCut()) {
       i.remove();
       livesChanged(true);
     }
@@ -207,7 +207,7 @@ void drawHiscores(){
 */
 
 void drawLeapCursor() {
-
+  fill(255,0,0);
   for (Pointable p : leap.getPointableList()) {
     PVector position = leap.getTip(p);
     ellipse(position.x, position.y, 20, 20);
@@ -289,10 +289,9 @@ void mouseDragged() {
   for (int i = 0; i < knightArray.size (); i++)
   {
     Knight myKnight = (Knight) knightArray.get(i);
-    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius())
-    {
-      myKnight.setKnightString("appleCut.png");
-      myKnight.setKnight(loadImage("appleCut.png"));
+    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius()){
+      myKnight.setIsCut(true);
+      myKnight.setKnightIndex(myKnight.knightIndex);
       pointCounter++;
     }
   }
