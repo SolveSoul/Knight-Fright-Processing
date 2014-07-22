@@ -33,6 +33,7 @@ long startTime;
 long counterTime;
 
 int transcounter; // level transition indicator
+PImage imgTransition;
 
 //hiscores
 ArrayList<HiscoreEntry> scores;
@@ -58,7 +59,8 @@ void setup() {
   size(640, 480);
   noStroke();
   imgBack = loadImage("menuBackground.png");
-
+  imgTransition = loadImage("transition.png");
+  
   //general inits
   leap = new LeapMotionP5(this);
 
@@ -194,15 +196,17 @@ void drawGameOver() {
 }
 
 void drawLevelTransition(int transcounter) {
-  textSize(30);
+  image(imgTransition,120, -20);
+  fill(#ffffff);
+  textSize(80);
   if (transcounter <= 60) {
-    text("3", width/2, height/2);
+    text("3",300, 320);
   } else if (transcounter > 60 && transcounter <=120) {
-    text("2", width/2, height/2);
+    text("2", 300, 320);
   } else if (transcounter > 120 && transcounter <=180) {
-    text("1", width/2, height/2);
+    text("1", 300, 320);
   } else {
-    text("go", width/2, height/2);
+    text("GO!", 250, 320);
   }
   if (transcounter == 240) {
     state = AppState.GAME;
