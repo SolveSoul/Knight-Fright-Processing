@@ -30,6 +30,8 @@ class Knight {
     //this.bombImage = loadImage("");
     this.x = x;
     this.y = y;
+    
+
     this.speedX = random(-2, 2);
     this.speedY = random(-15, -10);
     this.r = 50;
@@ -98,7 +100,6 @@ class Knight {
   }
 
   private void bounce() {
-    if(diff == Difficulty.EASY)
       
     if ((x >= width - r && speedX > 0) || (x < r && speedX < 0)) {
       speedX = speedX * (-0.2);

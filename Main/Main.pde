@@ -37,9 +37,9 @@ ArrayList<HiscoreEntry> scores;
 HiscoreHandler hh;
 LeapButton btnBackToMenu;
 
-//Next level
+//Next level / Restart / Share
 LeapButton btnNextLevel;
-
+LeapButton btnRestart;
 //webcam
 WebcamHandler webcam;
 
@@ -76,9 +76,9 @@ void setup() {
   scores = hh.getHiscores();
   btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
   
-  //next level
+  //next level / Restart / Share
   btnNextLevel = new LeapButton(width/2 - 90, height/2, 180, 60, "Next level");
-  
+  btnRestart = new LeapButton(width/2 - 90, height/2, 180, 60, "Restart level");
   //webcam
   webcam = new WebcamHandler(this);
   
@@ -87,7 +87,7 @@ void setup() {
 
 void draw() {
   background(imgBack);
-
+  println("app: " + appearanceTime);
   if (state == AppState.WEBCAM) {
     drawCamera();
   } else if (state == AppState.MAINMENU) {
@@ -353,6 +353,26 @@ void mousePressed() {
     //go back to menu from hiscores button 
     if (mouseX > btnBackToMenu.bX && mouseX < btnBackToMenu.bX + btnBackToMenu.bWidth && mouseY > btnBackToMenu.bY && mouseY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
       state = AppState.MAINMENU;
+    }
+  } else if(state == AppState.LEVELCOMPLETE){
+    if (mouseX > btnNextLevel.bX && mouseX < btnNextLevel.bX + btnNextLevel.bWidth && mouseY > btnNextLevel.bY && mouseY < btnNextLevel.bY + btnNextLevel.bHeight) {
+      lives = 3;
+      currentLvl++;
+      rectHeight = 180;
+      
+      timer = 0;
+      if(appearanceTime != 0 || appearanceTime > 0){
+      if(this.diff == Difficulty.EASY){
+        appearanceTime= appearanceTime - 300;
+      } else if(this.diff == Difficulty.MEDIUM){
+        appearanceTime= appearanceTime - 150;
+      } else{
+        appearanceTime= appearanceTime - 50;
+      }
+      } else{
+        appearanceTime = 100;
+      }
+      state = AppState.GAME;
     }
   }
 }
