@@ -21,6 +21,7 @@ class Knight {
   private ArrayList<PImage> images;
   private ArrayList<PImage> cutImages;
   private PImage bombImage;
+  Difficulty diff;
 
   //ctor
   public Knight(float x, float y) {
@@ -83,12 +84,12 @@ class Knight {
     //add the images
     this.images.add(loadImage("apple.png"));
     this.cutImages.add(loadImage("appleCut.png"));
-    this.images.add(loadImage("pear.png"));
-    this.cutImages.add(loadImage("pearCut.png"));
+    //this.images.add(loadImage("pear.png"));
+   // this.cutImages.add(loadImage("pearCut.png"));
   }
 
   private void knightSetup() {
-    this.knightIndex = (int)(random(0, 2));
+    this.knightIndex = (int)(random(0, 1));
     this.currentKnight = images.get(this.knightIndex);
   }
 
@@ -97,11 +98,13 @@ class Knight {
   }
 
   private void bounce() {
+    if(diff == Difficulty.EASY)
+      
     if ((x >= width - r && speedX > 0) || (x < r && speedX < 0)) {
-      speedX = speedX * (-1);
+      speedX = speedX * (-0.2);
     }
     if (y <  0) {
-      speedY = speedY * (-1);
+      speedY = speedY * (-0.2);
     }
   }
 

@@ -7,6 +7,7 @@ import java.util.Iterator;
 //general fields
 AppState state = AppState.MAINMENU;
 LeapMotionP5 leap;
+PImage imgBack;
 
 //webcam fields
 float camWidth = 640;
@@ -18,6 +19,7 @@ ArrayList<LeapButton> bGroup = new ArrayList<LeapButton>();
 LeapButton startGame;
 LeapButton btnHiscores;
 
+
 //Game fields
 int rectHeight = 180;
 ArrayList knightArray = new ArrayList();
@@ -25,7 +27,7 @@ int pointCounter = 0;
 int currentLvl = 1;
 int lives = 3;
 int timer;
-int appearanceTime = 500;    //the higher this field, the slower the knights spawn
+int appearanceTime;    //the higher this field, the slower the knights spawn
 
 long startTime;
 long counterTime;
@@ -34,6 +36,9 @@ long counterTime;
 ArrayList<HiscoreEntry> scores;
 HiscoreHandler hh;
 LeapButton btnBackToMenu;
+
+//Next level
+LeapButton btnNextLevel;
 
 //webcam
 WebcamHandler webcam;
@@ -49,6 +54,7 @@ void setup() {
   //general settings
   size(640, 480);
   noStroke();
+  imgBack = loadImage("menuBackground.png");
 
   //general inits
   leap = new LeapMotionP5(this);
@@ -70,14 +76,17 @@ void setup() {
   scores = hh.getHiscores();
   btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
   
+  //next level
+  btnNextLevel = new LeapButton(width/2 - 90, height/2, 180, 60, "Next level");
+  
   //webcam
   webcam = new WebcamHandler(this);
   
 }
 
-void draw() {
 
-  background(177);
+void draw() {
+  background(imgBack);
 
   if (state == AppState.WEBCAM) {
     drawCamera();
@@ -153,7 +162,7 @@ void drawGame() {
   //Spawn the knights
   if (System.currentTimeMillis() - counterTime > appearanceTime)
   {
-    Knight myKnight = new Knight(random(width), random(height, height - 100));
+    Knight myKnight = new Knight(random(width - 100), random(height, height - 100));
     knightArray.add(myKnight);
     counterTime = System.currentTimeMillis();
   }
@@ -170,7 +179,8 @@ void drawGame() {
 }
 
 void draweLevelComplete() {
-  text("complete", width/2, height/2);
+  //text("complete", width/2, height/2);
+  btnNextLevel.display();
   knightArray.clear();
 }
 
@@ -271,10 +281,14 @@ void changeDifficulty(Difficulty difficulty) {
   //set the correct difficulty button
   if (this.diff == Difficulty.EASY) {
     bGroup.get(0).setIsSelected(true);
+    appearanceTime = 1800;
+    
   } else if (this.diff == Difficulty.MEDIUM) {
     bGroup.get(1).setIsSelected(true);
+    appearanceTime = 1000;
   } else {
     bGroup.get(2).setIsSelected(true);
+    appearanceTime = 500;
   }
 }
 
@@ -334,6 +348,7 @@ void mousePressed() {
     if (mouseX > btnHiscores.bX && mouseX < btnHiscores.bX + btnHiscores.bWidth && mouseY > btnHiscores.bY && mouseY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
     }    
+
   } else if(state == AppState.HISCORES){
     //go back to menu from hiscores button 
     if (mouseX > btnBackToMenu.bX && mouseX < btnBackToMenu.bX + btnBackToMenu.bWidth && mouseY > btnBackToMenu.bY && mouseY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
