@@ -32,6 +32,8 @@ int appearanceTime;    //the higher this field, the slower the knights spawn
 long startTime;
 long counterTime;
 
+int transcounter; // level transition indicator
+
 //hiscores
 ArrayList<HiscoreEntry> scores;
 HiscoreHandler hh;
@@ -40,14 +42,15 @@ LeapButton btnBackToMenu;
 //Next level / Restart / Share
 LeapButton btnNextLevel;
 LeapButton btnRestart;
+
 //webcam
 WebcamHandler webcam;
 
 /*
 =================================
  Processing Main methods
-=================================
-*/
+ =================================
+ */
 
 void setup() {
 
@@ -70,24 +73,23 @@ void setup() {
   //game settings
   startTime = System.currentTimeMillis();
   counterTime = System.currentTimeMillis();
-  
+
   //scores
   hh = new HiscoreHandler();
   scores = hh.getHiscores();
   btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
-  
+
   //next level / Restart / Share
   btnNextLevel = new LeapButton(width/2 - 90, height/2, 180, 60, "Next level");
   btnRestart = new LeapButton(width/2 - 90, height/2, 180, 60, "Restart level");
+
   //webcam
   webcam = new WebcamHandler(this);
-  
 }
 
 
 void draw() {
   background(imgBack);
-  println("app: " + appearanceTime);
   if (state == AppState.WEBCAM) {
     drawCamera();
   } else if (state == AppState.MAINMENU) {
@@ -101,16 +103,19 @@ void draw() {
   } else if (state == AppState.LEVELCOMPLETE) {
     draweLevelComplete();
     drawLeapCursor();
-  } else if(state == AppState.HISCORES){
+  } else if (state == AppState.HISCORES) {
     drawHiscores();
     drawLeapCursor();
+  } else if (state == AppState.LEVELTRANSITION) {
+    transcounter++;
+    drawLevelTransition(transcounter);
   }
 }
 
 /*=================================
  Processing draw methods
-=================================
-*/
+ =================================
+ */
 
 void drawCamera() {
   webcam.drawCam();
@@ -179,27 +184,42 @@ void drawGame() {
 }
 
 void draweLevelComplete() {
-  //text("complete", width/2, height/2);
   btnNextLevel.display();
   knightArray.clear();
 }
 
 void drawGameOver() {
-  text("game over", width/2, height/2);
+  btnRestart.display();
   knightArray.clear();
 }
 
-void drawHiscores(){
-  
+void drawLevelTransition(int transcounter) {
+  textSize(30);
+  if (transcounter <= 60) {
+    text("3", width/2, height/2);
+  } else if (transcounter > 60 && transcounter <=120) {
+    text("2", width/2, height/2);
+  } else if (transcounter > 120 && transcounter <=180) {
+    text("1", width/2, height/2);
+  } else {
+    text("go", width/2, height/2);
+  }
+  if (transcounter == 240) {
+    state = AppState.GAME;
+  }
+}
+
+void drawHiscores() {
+
   btnBackToMenu.display();
-  
+
   //auto refresh every 1500 secs
-  if(millis() % 1500 == 0){
+  if (millis() % 1500 == 0) {
     scores = hh.getHiscores();
   }
-  
-  if(scores.size() != 0){
-    for(int i = 0; i < scores.size(); i++){
+
+  if (scores.size() != 0) {
+    for (int i = 0; i < scores.size (); i++) {
       text(i + 1, (width/2 - 50), (50 + (i*15)));
       text(scores.get(i).getName(), width/2, (50 + (i*15)));
       text(scores.get(i).getScore(), width/2 + 50, (50 + (i*15)));
@@ -207,18 +227,17 @@ void drawHiscores(){
   } else {
     text("No scores available yet!", width/2, height/2);
   }
-
 }
 
 /*
 =======================================
  (Almost) Always active draw methods
-=======================================
-*/
+ =======================================
+ */
 
 void drawLeapCursor() {
-  fill(255,0,0);
-  for (Pointable p : leap.getPointableList()) {
+  fill(255, 0, 0);
+  for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
     ellipse(position.x, position.y, 20, 20);
     break;
@@ -229,8 +248,8 @@ void drawLeapCursor() {
 /*
 =================================
  Helpful methods
-=================================
-*/
+ =================================
+ */
 
 void indicateTime() {
 
@@ -282,7 +301,6 @@ void changeDifficulty(Difficulty difficulty) {
   if (this.diff == Difficulty.EASY) {
     bGroup.get(0).setIsSelected(true);
     appearanceTime = 1800;
-    
   } else if (this.diff == Difficulty.MEDIUM) {
     bGroup.get(1).setIsSelected(true);
     appearanceTime = 1000;
@@ -296,14 +314,14 @@ void changeDifficulty(Difficulty difficulty) {
 /*
 =================================
  Processing + leap events
-=================================
-*/
+ =================================
+ */
 
 void mouseDragged() {
   for (int i = 0; i < knightArray.size (); i++)
   {
     Knight myKnight = (Knight) knightArray.get(i);
-    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius()){
+    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius()) {
       myKnight.setIsCut(true);
       myKnight.setKnightIndex(myKnight.knightIndex);
       pointCounter++;
@@ -314,18 +332,17 @@ void mouseDragged() {
 
 void mousePressed() {
   if (state == AppState.WEBCAM) {
-    
+
     //save the image
     Calendar cal = Calendar.getInstance();
     String filename = cal.getTime().toString().replace(":", "") + ".png";
     saveFrame(filename);
-    
+
     //tweet the image
     Thread tweet = new Thread(new TwitterHandler(799, filename));
     tweet.start();
-    
   } else if (state == AppState.MAINMENU) {
-    
+
     //the most dirty code you'll ever see of your life
     for (LeapButton l : bGroup) {
       if (mouseX > l.bX && mouseX < l.bX + l.bWidth && mouseY > l.bY && mouseY < l.bY + l.bHeight) {
@@ -341,66 +358,74 @@ void mousePressed() {
 
     //start game button
     if (mouseX > startGame.bX && mouseX < startGame.bX + startGame.bWidth && mouseY > startGame.bY && mouseY < startGame.bY + startGame.bHeight) {
-      state = AppState.GAME;
+      state = AppState.LEVELTRANSITION;
     }
-    
+
     //check hiscores button
     if (mouseX > btnHiscores.bX && mouseX < btnHiscores.bX + btnHiscores.bWidth && mouseY > btnHiscores.bY && mouseY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
-    }    
-
-  } else if(state == AppState.HISCORES){
+    }
+  } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
     if (mouseX > btnBackToMenu.bX && mouseX < btnBackToMenu.bX + btnBackToMenu.bWidth && mouseY > btnBackToMenu.bY && mouseY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
       state = AppState.MAINMENU;
     }
-  } else if(state == AppState.LEVELCOMPLETE){
+  } else if (state == AppState.LEVELCOMPLETE) {
     if (mouseX > btnNextLevel.bX && mouseX < btnNextLevel.bX + btnNextLevel.bWidth && mouseY > btnNextLevel.bY && mouseY < btnNextLevel.bY + btnNextLevel.bHeight) {
+
       lives = 3;
       currentLvl++;
       rectHeight = 180;
-      
+      transcounter = 0;
       timer = 0;
-      if(appearanceTime != 0 || appearanceTime > 0){
-      if(this.diff == Difficulty.EASY){
-        appearanceTime= appearanceTime - 300;
-      } else if(this.diff == Difficulty.MEDIUM){
-        appearanceTime= appearanceTime - 150;
-      } else{
-        appearanceTime= appearanceTime - 50;
-      }
-      } else{
+
+      if (appearanceTime != 0 || appearanceTime > 0) {
+        if (this.diff == Difficulty.EASY) {
+          appearanceTime= appearanceTime - 300;
+        } else if (this.diff == Difficulty.MEDIUM) {
+          appearanceTime= appearanceTime - 150;
+        } else {
+          appearanceTime= appearanceTime - 50;
+        }
+      } else {
         appearanceTime = 100;
       }
-      state = AppState.GAME;
-    }
-  }
-}
 
+      state = AppState.LEVELTRANSITION;
+    }
+  }/* else if (state == AppState.GAMEOVER) {
+    //go back to menu 
+    println("game over");
+    if (mouseX > btnRestart.bX && mouseX < btnRestart.bX + btnRestart.bWidth && mouseY > btnRestart.bY && mouseY < btnRestart.bY + btnRestart.bHeight) {
+      state = AppState.MAINMENU;
+    }
+  }*/
+}
 public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
   println("detected");
-  
+
   float leapX = gesture.position().getX();
   float leapY = gesture.position().getY();
 
-  for (Pointable p : leap.getPointableList()) {
+  for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
     leapX = position.x;
     leapY = position.y;
   }
 
   for (LeapButton l : bGroup) {
-    if(leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
-      
+    if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
+
       break;
     }
   }
 }
 
-void keyPressed(){
- /*
+void keyPressed() {
+  /*
  HiscoreEntry e = new HiscoreEntry("JAN", 21000);
- hh.saveHiscore(e);
- */
+   hh.saveHiscore(e);
+   */
 }
+
