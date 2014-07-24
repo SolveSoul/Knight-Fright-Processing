@@ -397,13 +397,12 @@ void mousePressed() {
 
       state = AppState.LEVELTRANSITION;
     }
-  }/* else if (state == AppState.GAMEOVER) {
+  } else if (state == AppState.GAMEOVER) {
     //go back to menu 
-    println("game over");
     if (mouseX > btnRestart.bX && mouseX < btnRestart.bX + btnRestart.bWidth && mouseY > btnRestart.bY && mouseY < btnRestart.bY + btnRestart.bHeight) {
       state = AppState.MAINMENU;
     }
-  }*/
+  }
 }
 public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
