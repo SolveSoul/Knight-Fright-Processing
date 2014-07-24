@@ -84,14 +84,18 @@ class Knight {
     this.cutImages = new ArrayList<PImage>();
 
     //add the images
-    this.images.add(loadImage("apple.png"));
-    this.cutImages.add(loadImage("appleCut.png"));
-    //this.images.add(loadImage("pear.png"));
-   // this.cutImages.add(loadImage("pearCut.png"));
+    this.images.add(loadImage("blue.png"));
+    this.cutImages.add(loadImage("blueCut.png"));
+    this.images.add(loadImage("red.png"));
+    this.cutImages.add(loadImage("redCut.png"));
+    this.images.add(loadImage("green.png"));
+    this.cutImages.add(loadImage("greenCut.png"));
+    this.images.add(loadImage("yellow.png"));
+    this.cutImages.add(loadImage("yellowCut.png"));
   }
 
   private void knightSetup() {
-    this.knightIndex = (int)(random(0, 1));
+    this.knightIndex = (int)(random(0, 4));
     this.currentKnight = images.get(this.knightIndex);
   }
 

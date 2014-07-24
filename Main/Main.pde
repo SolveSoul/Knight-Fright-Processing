@@ -128,7 +128,7 @@ void drawMainMenu() {
   //draw start button  
   startGame.display();
   btnHiscores.display();
-
+  
   //draw difficultybuttons
   for (LeapButton l : bGroup) {
     l.display();
@@ -401,6 +401,11 @@ void mousePressed() {
     //go back to menu 
     if (mouseX > btnRestart.bX && mouseX < btnRestart.bX + btnRestart.bWidth && mouseY > btnRestart.bY && mouseY < btnRestart.bY + btnRestart.bHeight) {
       state = AppState.MAINMENU;
+      lives = 3;
+      currentLvl = 1;
+      rectHeight = 180;
+      transcounter = 0;
+      timer = 0;
     }
   }
 }
@@ -419,9 +424,9 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
   for (LeapButton l : bGroup) {
     if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
-
       break;
     }
+    
   }
 }
 
