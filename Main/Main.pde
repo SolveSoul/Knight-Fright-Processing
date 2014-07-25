@@ -1,6 +1,6 @@
 import com.onformative.leap.*;
 import com.leapmotion.leap.*;
-
+import com.leapmotion.leap.ScreenTapGesture;
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -63,10 +63,10 @@ void setup() {
   imgBack = loadImage("menuBackground.png");
   imgTransition = loadImage("transition.png");
   imgGameBack = loadImage("gameBackground.png");
-  
+
   //general inits
   leap = new LeapMotionP5(this);
-
+  leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
   //main menu settings
   bGroup.add(new LeapButton(width/2 - 75, height/2 - 10, 150, 60, "Easy"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
@@ -85,12 +85,12 @@ void setup() {
   btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
 
   //next level / Restart / Share
-  btnNextLevel = new LeapButton(width/2 - 90, height/2, 180, 60, "Next level");
-  btnRestart = new LeapButton(width/2 - 90, height/2, 180, 60, "Restart level");
+  btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");
+  btnRestart = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Restart level");
 
   //webcam
   webcam = new WebcamHandler(this);
-  
+
   //font
   font = createFont("Knights Quest", 25);
 }
@@ -99,7 +99,7 @@ void setup() {
 void draw() {
   background(imgBack);
   textFont(font);
-  
+
   if (state == AppState.WEBCAM) {
     drawCamera();
   } else if (state == AppState.MAINMENU) {
@@ -133,12 +133,13 @@ void drawCamera() {
 
 void drawMainMenu() {
   textSize(60);
-  text("Knight Fright", width/2 - 160, 55);
+  fill(#3c2415);
+  text("Knight Fright", width/2 - 150, 55);
   //draw start button  
   textSize(30);
   startGame.display();
   btnHiscores.display();
-  
+
   //draw difficultybuttons
   for (LeapButton l : bGroup) {
     l.display();
@@ -161,7 +162,7 @@ void drawGame() {
 
   //draw score + lives
   textAlign(LEFT);
-  fill(#ffffff);
+  fill(#3c2415);
   textSize(30);
   text("Score: " + pointCounter, 25, 45);
   text("Lives: " + lives, 25, 70);
@@ -196,6 +197,10 @@ void drawGame() {
 }
 
 void draweLevelComplete() {
+  textSize(50);
+  fill(#3c2415);
+  text("Well done!", width/2-95, 200);
+  textSize(30);
   btnNextLevel.display();
   knightArray.clear();
 }
@@ -207,11 +212,11 @@ void drawGameOver() {
 
 void drawLevelTransition(int transcounter) {
   background(imgGameBack);
-  image(imgTransition,120, -20);
-  fill(#ffffff);
+  image(imgTransition, 120, -20);
+  fill(#3c2415);
   textSize(80);
   if (transcounter <= 60) {
-    text("3",300, 230);
+    text("3", 300, 230);
   } else if (transcounter > 60 && transcounter <=120) {
     text("2", 310, 230);
   } else if (transcounter > 120 && transcounter <=180) {
@@ -272,13 +277,13 @@ void indicateTime() {
   strokeWeight(3);
   rectMode(CORNER);
   noFill();
- // fill(144, 144, 144);
+  // fill(144, 144, 144);
   rect(width - 40, 20, 20, 180);
 
   stroke(#458B00);
   fill(#458B00);
   rect(width - 40, 20, 20, rectHeight);
-  
+
   if (timer % 10 == 0) {
     rectHeight--;
   }
@@ -423,8 +428,6 @@ void mousePressed() {
 }
 public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
-  println("detected");
-
   float leapX = gesture.position().getX();
   float leapY = gesture.position().getY();
 
@@ -434,11 +437,66 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     leapY = position.y;
   }
 
-  for (LeapButton l : bGroup) {
-    if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
-      break;
+  if (state == AppState.MAINMENU) {
+    for (LeapButton l : bGroup) {
+      if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
+        if (l.getLabelText().toLowerCase().equals("easy")) {
+          changeDifficulty(Difficulty.EASY);
+        } else if (l.getLabelText().toLowerCase().equals("medium")) {
+          changeDifficulty(Difficulty.MEDIUM);
+        } else {
+          changeDifficulty(Difficulty.HARD);
+        }
+      }
     }
-    
+
+    //start game button
+    if (leapX > startGame.bX && leapX < startGame.bX + startGame.bWidth && leapY > startGame.bY && leapY < startGame.bY + startGame.bHeight) {
+      state = AppState.LEVELTRANSITION;
+    }
+
+    //check hiscores button
+    if (leapX > btnHiscores.bX && leapX < btnHiscores.bX + btnHiscores.bWidth && leapY > btnHiscores.bY && leapY < btnHiscores.bY + btnHiscores.bHeight) {
+      state = AppState.HISCORES;
+    }
+  }else if (state == AppState.HISCORES) {
+    //go back to menu from hiscores button 
+    if (leapX > btnBackToMenu.bX && leapX < btnBackToMenu.bX + btnBackToMenu.bWidth && leapY > btnBackToMenu.bY && leapY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
+      state = AppState.MAINMENU;
+    }
+  } else if (state == AppState.LEVELCOMPLETE) {
+    if (leapX > btnNextLevel.bX && leapX < btnNextLevel.bX + btnNextLevel.bWidth && leapY > btnNextLevel.bY && leapY < btnNextLevel.bY + btnNextLevel.bHeight) {
+
+      lives = 3;
+      currentLvl++;
+      rectHeight = 180;
+      transcounter = 0;
+      timer = 0;
+
+      if (appearanceTime != 0 || appearanceTime > 0) {
+        if (this.diff == Difficulty.EASY) {
+          appearanceTime= appearanceTime - 300;
+        } else if (this.diff == Difficulty.MEDIUM) {
+          appearanceTime= appearanceTime - 150;
+        } else {
+          appearanceTime= appearanceTime - 50;
+        }
+      } else {
+        appearanceTime = 100;
+      }
+
+      state = AppState.LEVELTRANSITION;
+    }
+  } else if (state == AppState.GAMEOVER) {
+    //go back to menu 
+    if (leapX > btnRestart.bX && leapX < btnRestart.bX + btnRestart.bWidth && leapY > btnRestart.bY && leapY < btnRestart.bY + btnRestart.bHeight) {
+      state = AppState.MAINMENU;
+      lives = 3;
+      currentLvl = 1;
+      rectHeight = 180;
+      transcounter = 0;
+      timer = 0;
+    }
   }
 }
 

@@ -49,7 +49,7 @@ class LeapButton {
     this.bX = bX;
     this.bY = bY;
     this.labelText = labelText;
-    this.labelColor = 0;
+    this.labelColor = #3c2415;
     this.rectColor = 255;
     this.strokeColor = 0;
     this.strokeThickness = 3;
@@ -67,10 +67,11 @@ class LeapButton {
     rect(bX, bY, bWidth, bHeight);
 
     fill(labelColor);
-    text(labelText, bX + bWidth/2, bY + bHeight/2);
+    text(labelText, bX + bWidth/2, bY + bHeight/2 + 5);
 
     noStroke();
     textAlign(CORNER);
+    
   }
 
   @Override
