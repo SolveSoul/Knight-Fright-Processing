@@ -51,7 +51,7 @@ class LeapButton {
     this.labelText = labelText;
     this.labelColor = #3c2415;
     this.rectColor = 255;
-    this.strokeColor = 0;
+    this.strokeColor = #3c2415;
     this.strokeThickness = 3;
   }
 
