@@ -8,6 +8,8 @@ import java.util.Iterator;
 AppState state = AppState.MAINMENU;
 LeapMotionP5 leap;
 PImage imgBack;
+PImage imgGameBack;
+PFont font; 
 
 //webcam fields
 float camWidth = 640;
@@ -60,16 +62,17 @@ void setup() {
   noStroke();
   imgBack = loadImage("menuBackground.png");
   imgTransition = loadImage("transition.png");
+  imgGameBack = loadImage("gameBackground.png");
   
   //general inits
   leap = new LeapMotionP5(this);
 
   //main menu settings
-  bGroup.add(new LeapButton(width/2 - 75, height/2 - 50, 150, 60, "Easy"));
-  bGroup.add(new LeapButton(width/2 - 75, height/2 + 20, 150, 60, "Medium"));
-  bGroup.add(new LeapButton(width/2 - 75, height/2 + 90, 150, 60, "Hard"));
-  startGame = new LeapButton(width/2 - 90, height/2 - 120, 180, 60, "Start game");
-  btnHiscores = new LeapButton(width - 70, height - 60, 60, 50, "hiscores");
+  bGroup.add(new LeapButton(width/2 - 75, height/2 - 10, 150, 60, "Easy"));
+  bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
+  bGroup.add(new LeapButton(width/2 - 75, height/2 + 130, 150, 60, "Hard"));
+  startGame = new LeapButton(width/2 - 90, height/2 - 80, 180, 60, "Start game");
+  btnHiscores = new LeapButton(width - 120, height - 60, 100, 50, "hiscores");
   changeDifficulty(Difficulty.MEDIUM);
 
   //game settings
@@ -87,11 +90,16 @@ void setup() {
 
   //webcam
   webcam = new WebcamHandler(this);
+  
+  //font
+  font = createFont("Knights Quest", 25);
 }
 
 
 void draw() {
   background(imgBack);
+  textFont(font);
+  
   if (state == AppState.WEBCAM) {
     drawCamera();
   } else if (state == AppState.MAINMENU) {
@@ -124,8 +132,10 @@ void drawCamera() {
 }
 
 void drawMainMenu() {
-
+  textSize(60);
+  text("Knight Fright", width/2 - 160, 55);
   //draw start button  
+  textSize(30);
   startGame.display();
   btnHiscores.display();
   
@@ -136,7 +146,7 @@ void drawMainMenu() {
 }
 
 void drawGame() {
-
+  background(imgGameBack);
   //Force garbage collection, just to be safe
   if (millis() % 150 == 0) {
     System.gc();
@@ -152,7 +162,7 @@ void drawGame() {
   //draw score + lives
   textAlign(LEFT);
   fill(#ffffff);
-  textSize(25);
+  textSize(30);
   text("Score: " + pointCounter, 25, 45);
   text("Lives: " + lives, 25, 70);
 
@@ -196,17 +206,18 @@ void drawGameOver() {
 }
 
 void drawLevelTransition(int transcounter) {
+  background(imgGameBack);
   image(imgTransition,120, -20);
   fill(#ffffff);
   textSize(80);
   if (transcounter <= 60) {
-    text("3",300, 320);
+    text("3",300, 230);
   } else if (transcounter > 60 && transcounter <=120) {
-    text("2", 300, 320);
+    text("2", 310, 230);
   } else if (transcounter > 120 && transcounter <=180) {
-    text("1", 300, 320);
+    text("1", 310, 230);
   } else {
-    text("GO!", 250, 320);
+    text("GO!", 270, 230);
   }
   if (transcounter == 240) {
     state = AppState.GAME;
@@ -260,27 +271,28 @@ void indicateTime() {
   stroke(144, 144, 144);
   strokeWeight(3);
   rectMode(CORNER);
-  fill(144, 144, 144);
+  noFill();
+ // fill(144, 144, 144);
   rect(width - 40, 20, 20, 180);
 
+  stroke(#458B00);
   fill(#458B00);
   rect(width - 40, 20, 20, rectHeight);
-  noStroke();
-
+  
   if (timer % 10 == 0) {
     rectHeight--;
   }
 
   if (timer % 1800 > 1000) {
+    stroke(#FF7F00);
     fill(#FF7F00);
     rect(width - 40, 20, 20, rectHeight);
-    noStroke();
   }
 
   if (timer %1800 > 1520) {
+    stroke(#B20000);
     fill(#B20000);
     rect(width - 40, 20, 20, rectHeight);
-    noStroke();
   }
 }
 
@@ -304,13 +316,13 @@ void changeDifficulty(Difficulty difficulty) {
   //set the correct difficulty button
   if (this.diff == Difficulty.EASY) {
     bGroup.get(0).setIsSelected(true);
-    appearanceTime = 1800;
+    appearanceTime = 2300;
   } else if (this.diff == Difficulty.MEDIUM) {
     bGroup.get(1).setIsSelected(true);
-    appearanceTime = 1000;
+    appearanceTime = 1800;
   } else {
     bGroup.get(2).setIsSelected(true);
-    appearanceTime = 500;
+    appearanceTime = 1000;
   }
 }
 

@@ -63,7 +63,7 @@ class LeapButton {
       strokeWeight(strokeThickness);
     }
 
-    fill(rectColor);
+    fill(rectColor,90);
     rect(bX, bY, bWidth, bHeight);
 
     fill(labelColor);
