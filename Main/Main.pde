@@ -1,6 +1,8 @@
 import com.onformative.leap.*;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.ScreenTapGesture;
+import com.leapmotion.leap.SwipeGesture;
+
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -67,6 +69,8 @@ void setup() {
   //general inits
   leap = new LeapMotionP5(this);
   leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
+  leap.enableGesture(Gesture.Type.TYPE_SWIPE);
+
   //main menu settings
   bGroup.add(new LeapButton(width/2 - 75, height/2 - 10, 150, 60, "Easy"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
@@ -107,6 +111,7 @@ void draw() {
     drawLeapCursor();
   } else if (state == AppState.GAME) {
     drawGame();
+    drawLeapLine();
   } else if (state == AppState.GAMEOVER) {
     drawGameOver();
     drawLeapCursor();
@@ -264,7 +269,15 @@ void drawLeapCursor() {
   }
 }
 
-
+void drawLeapLine(){
+  fill(255);
+  for (Pointable p : leap.getPointableList ()) {
+    PVector position = leap.getTip(p);
+    //line(position.x, position.y, 20, 20);
+  //  ellipse(position.x, position.y, 1, 1);
+    break;
+  }
+}
 /*
 =================================
  Helpful methods
@@ -300,7 +313,6 @@ void indicateTime() {
     rect(width - 40, 20, 20, rectHeight);
   }
 }
-
 
 void livesChanged(boolean decreaseLives) {
   if (decreaseLives) {
@@ -339,6 +351,12 @@ void changeDifficulty(Difficulty difficulty) {
  */
 
 void mouseDragged() {
+  
+  stroke(225, 225, 225);
+  strokeWeight(3.0);
+  strokeJoin(ROUND);
+  line(pmouseX, pmouseY, mouseX, mouseY);
+  
   for (int i = 0; i < knightArray.size (); i++)
   {
     Knight myKnight = (Knight) knightArray.get(i);
@@ -459,7 +477,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     if (leapX > btnHiscores.bX && leapX < btnHiscores.bX + btnHiscores.bWidth && leapY > btnHiscores.bY && leapY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
     }
-  }else if (state == AppState.HISCORES) {
+  } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
     if (leapX > btnBackToMenu.bX && leapX < btnBackToMenu.bX + btnBackToMenu.bWidth && leapY > btnBackToMenu.bY && leapY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
       state = AppState.MAINMENU;
@@ -496,6 +514,34 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       rectHeight = 180;
       transcounter = 0;
       timer = 0;
+    }
+  }
+}
+
+public void swipeGestureRecognized(SwipeGesture gesture) {
+  
+    
+  float leapX = gesture.position().getX();
+  float leapY = gesture.position().getY();
+ 
+  stroke(225, 225, 225);
+  strokeWeight(10);
+  strokeJoin(ROUND);
+ // line(pmouseX, pmouseY, leapX, leapY);
+
+  for (Pointable p : leap.getPointableList ()) {
+    PVector position = leap.getTip(p);
+    leapX = position.x;
+    leapY = position.y;
+  }
+  
+  for (int i = 0; i < knightArray.size (); i++)
+  {
+    Knight myKnight = (Knight) knightArray.get(i);
+    if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius()) {
+      myKnight.setIsCut(true);
+      myKnight.setKnightIndex(myKnight.knightIndex);
+      pointCounter++;
     }
   }
 }
