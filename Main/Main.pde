@@ -405,8 +405,7 @@ void mouseDragged() {
 
 
 void mousePressed() {
-  if (state == AppState.WEBCAM) {
-  } else if (state == AppState.MAINMENU) {
+  if (state == AppState.MAINMENU) {
 
     //the most dirty code you'll ever see of your life
     for (LeapButton l : bGroup) {
@@ -482,17 +481,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     leapX = position.x;
     leapY = position.y;
   }
-  if (state == AppState.WEBCAM) {
-
-    //save the image
-    Calendar cal = Calendar.getInstance();
-    String filename = cal.getTime().toString().replace(":", "") + ".png";
-    saveFrame(filename);
-
-    //tweet the image
-    // Thread tweet = new Thread(new TwitterHandler(799, filename));
-    // tweet.start();
-  } else if (state == AppState.MAINMENU) {
+ if (state == AppState.MAINMENU) {
     for (LeapButton l : bGroup) {
       if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
         if (l.getLabelText().toLowerCase().equals("easy")) {
