@@ -2,7 +2,7 @@ import com.onformative.leap.*;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.ScreenTapGesture;
 import com.leapmotion.leap.SwipeGesture;
-
+import com.leapmotion.leap.CircleGesture;
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -71,6 +71,7 @@ void setup() {
   leap = new LeapMotionP5(this);
   leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
   leap.enableGesture(Gesture.Type.TYPE_SWIPE);
+  leap.enableGesture(Gesture.Type.TYPE_CIRCLE);
 
   //main menu settings
   bGroup.add(new LeapButton(width/2 - 75, height/2 - 10, 150, 60, "Easy"));
@@ -110,7 +111,6 @@ void draw() {
     drawCamera();
     counter++;
     drawCountDown(counter);
-    
   } else if (state == AppState.MAINMENU) {
     drawMainMenu();
     drawLeapCursor();
@@ -481,7 +481,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     leapX = position.x;
     leapY = position.y;
   }
- if (state == AppState.MAINMENU) {
+  if (state == AppState.MAINMENU) {
     for (LeapButton l : bGroup) {
       if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
         if (l.getLabelText().toLowerCase().equals("easy")) {
@@ -548,7 +548,6 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
 public void swipeGestureRecognized(SwipeGesture gesture) {
 
-
   float leapX = gesture.position().getX();
   float leapY = gesture.position().getY();
 
@@ -572,6 +571,16 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
       pointCounter++;
     }
   }
+}
+
+public void circleGestureRecognized(CircleGesture gesture, String clockwiseness) {
+  if (state == AppState.HISCORES || state == AppState.MAINMENU) {
+    if ( clockwiseness == "clockwise") {
+      state = AppState.HISCORES;
+    } else if (clockwiseness == "counterclockwise") {
+      state = AppState.MAINMENU;
+    }
+  } 
 }
 
 void keyPressed() {
