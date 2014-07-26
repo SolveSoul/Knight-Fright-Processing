@@ -47,6 +47,7 @@ LeapButton btnBackToMenu;
 //Next level / Restart / Share
 LeapButton btnNextLevel;
 LeapButton btnRestart;
+LeapButton btnShare;
 
 //webcam
 WebcamHandler webcam;
@@ -90,7 +91,8 @@ void setup() {
 
   //next level / Restart / Share
   btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");
-  btnRestart = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Restart level");
+  btnRestart = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Try again");
+  btnShare = new LeapButton(width/2 - 90, height/2 + 100, 180, 60, "Share");
 
   //webcam
   webcam = new WebcamHandler(this);
@@ -213,6 +215,8 @@ void draweLevelComplete() {
 void drawGameOver() {
   btnRestart.display();
   knightArray.clear();
+
+  btnShare.display();
 }
 
 void drawLevelTransition(int transcounter) {
@@ -269,12 +273,12 @@ void drawLeapCursor() {
   }
 }
 
-void drawLeapLine(){
+void drawLeapLine() {
   fill(255);
   for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
     //line(position.x, position.y, 20, 20);
-  //  ellipse(position.x, position.y, 1, 1);
+    //  ellipse(position.x, position.y, 1, 1);
     break;
   }
 }
@@ -351,12 +355,12 @@ void changeDifficulty(Difficulty difficulty) {
  */
 
 void mouseDragged() {
-  
+
   stroke(225, 225, 225);
   strokeWeight(3.0);
   strokeJoin(ROUND);
   line(pmouseX, pmouseY, mouseX, mouseY);
-  
+
   for (int i = 0; i < knightArray.size (); i++)
   {
     Knight myKnight = (Knight) knightArray.get(i);
@@ -378,8 +382,8 @@ void mousePressed() {
     saveFrame(filename);
 
     //tweet the image
-    Thread tweet = new Thread(new TwitterHandler(799, filename));
-    tweet.start();
+    // Thread tweet = new Thread(new TwitterHandler(799, filename));
+    // tweet.start();
   } else if (state == AppState.MAINMENU) {
 
     //the most dirty code you'll ever see of your life
@@ -441,6 +445,8 @@ void mousePressed() {
       rectHeight = 180;
       transcounter = 0;
       timer = 0;
+    } else if (mouseX > btnShare.bX && mouseX < btnShare.bX + btnShare.bWidth && mouseY > btnShare.bY && mouseY < btnShare.bY + btnShare.bHeight) {
+      state = AppState.WEBCAM;
     }
   }
 }
@@ -454,8 +460,17 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     leapX = position.x;
     leapY = position.y;
   }
+  if (state == AppState.WEBCAM) {
 
-  if (state == AppState.MAINMENU) {
+    //save the image
+    Calendar cal = Calendar.getInstance();
+    String filename = cal.getTime().toString().replace(":", "") + ".png";
+    saveFrame(filename);
+
+    //tweet the image
+    // Thread tweet = new Thread(new TwitterHandler(799, filename));
+    // tweet.start();
+  } else if (state == AppState.MAINMENU) {
     for (LeapButton l : bGroup) {
       if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
         if (l.getLabelText().toLowerCase().equals("easy")) {
@@ -514,27 +529,29 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       rectHeight = 180;
       transcounter = 0;
       timer = 0;
+    } else if (leapX > btnShare.bX && leapX < btnShare.bX + btnShare.bWidth && leapY > btnShare.bY && leapY < btnShare.bY + btnShare.bHeight) {
+      state = AppState.WEBCAM;
     }
   }
 }
 
 public void swipeGestureRecognized(SwipeGesture gesture) {
-  
-    
+
+
   float leapX = gesture.position().getX();
   float leapY = gesture.position().getY();
- 
+
   stroke(225, 225, 225);
   strokeWeight(10);
   strokeJoin(ROUND);
- // line(pmouseX, pmouseY, leapX, leapY);
+  // line(pmouseX, pmouseY, leapX, leapY);
 
   for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
     leapX = position.x;
     leapY = position.y;
   }
-  
+
   for (int i = 0; i < knightArray.size (); i++)
   {
     Knight myKnight = (Knight) knightArray.get(i);
