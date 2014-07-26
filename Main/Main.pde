@@ -78,7 +78,7 @@ void setup() {
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 130, 150, 60, "Hard"));
   startGame = new LeapButton(width/2 - 90, height/2 - 80, 180, 60, "Start game");
-  btnHiscores = new LeapButton(width - 120, height - 60, 100, 50, "hiscores");
+  btnHiscores = new LeapButton(width - 150, height - 60, 140, 50, "hiscores");
   changeDifficulty(Difficulty.MEDIUM);
 
   //game settings
@@ -88,7 +88,7 @@ void setup() {
   //scores
   hh = new HiscoreHandler();
   scores = hh.getHiscores();
-  btnBackToMenu = new LeapButton((width - width + 50), height - 60, 100, 50, "back to menu");
+  btnBackToMenu = new LeapButton((width-150), height - 60, 140, 50, "back to menu");
 
   //next level / Restart / Share
   btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");
@@ -208,9 +208,10 @@ void drawGame() {
 
 void draweLevelComplete() {
   textSize(50);
-  fill(#3c2415);
+  fill(255);
   text("Well done!", width/2-95, 200);
   textSize(30);
+  fill(#3c2415);
   btnNextLevel.display();
   knightArray.clear();
 }
@@ -249,15 +250,15 @@ void drawHiscores() {
   if (millis() % 1500 == 0) {
     scores = hh.getHiscores();
   }
-
+  fill(255);
   if (scores.size() != 0) {
     for (int i = 0; i < scores.size (); i++) {
-      text(i + 1, (width/2 - 50), (50 + (i*15)));
-      text(scores.get(i).getName(), width/2, (50 + (i*15)));
-      text(scores.get(i).getScore(), width/2 + 50, (50 + (i*15)));
+      text(i + 1, (width/2 - 80), (170 + (i*20)));
+      text(scores.get(i).getName(), width/2-50, (170 + (i*20)));
+      text(scores.get(i).getScore(), width/2 +20, (170 + (i*20)));
     }
   } else {
-    text("No scores available yet!", width/2, height/2);
+    text("No scores available yet!", width/2-110, height/2);
   }
 }
 
