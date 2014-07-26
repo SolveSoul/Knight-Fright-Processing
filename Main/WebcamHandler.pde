@@ -46,6 +46,9 @@ class WebcamHandler {
     image(cam, 0, 0);
   }
 
+  public void stopCam(){
+    cam.stop();
+  }
   private void printAllWebcams() {
     println("available cameras:");
     String[] cameras = Capture.list();

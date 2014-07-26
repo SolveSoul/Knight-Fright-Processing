@@ -16,6 +16,8 @@ PFont font;
 //webcam fields
 float camWidth = 640;
 float camHeight = 480;
+String filename;
+PImage shareImage;
 
 //Menu fields
 Difficulty diff;
@@ -48,7 +50,8 @@ LeapButton btnBackToMenu;
 LeapButton btnNextLevel;
 LeapButton btnRestart;
 LeapButton btnShare;
-
+LeapButton btnPicOk;
+LeapButton btnPicNok;
 //webcam
 WebcamHandler webcam;
 int counter; 
@@ -94,6 +97,8 @@ void setup() {
   btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");
   btnRestart = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Try again");
   btnShare = new LeapButton(width/2 - 90, height/2 + 100, 180, 60, "Share");
+  btnPicOk = new LeapButton(120, 380, 180, 60, "Share on twitter");
+  btnPicNok = new LeapButton(365, 380, 180, 60, "Take new picture");
 
   //webcam
   webcam = new WebcamHandler(this);
@@ -129,6 +134,8 @@ void draw() {
   } else if (state == AppState.LEVELTRANSITION) {
     transcounter++;
     drawLevelTransition(transcounter);
+  } else if (state == AppState.SHARE) {
+    drawShareMenu(filename);
   }
 }
 
@@ -217,6 +224,11 @@ void draweLevelComplete() {
 }
 
 void drawGameOver() {
+  fill(255);
+  textSize(50);
+  text("Too bad!", 250, 200);
+  textSize(28);
+  text("you scored " + pointCounter + " points!", width/2-112, 230);
   btnRestart.display();
   knightArray.clear();
 
@@ -281,12 +293,27 @@ void drawCountDown(int counter) {
 void takePicture() {
   //save the image
   Calendar cal = Calendar.getInstance();
-  String filename = cal.getTime().toString().replace(":", "") + ".png";
+  filename = cal.getTime().toString().replace(":", "") + ".png";
   saveFrame(filename);
 
-  //tweet the image
-  // Thread tweet = new Thread(new TwitterHandler(799, filename));
-  // tweet.start();
+
+
+  File file = new File(filename);
+  if (!file.exists()) {
+    //webcam.stopCam();
+    //  drawSharePicture(filename);
+    state = AppState.SHARE;
+  }
+}
+
+void drawShareMenu(String filename) {
+  background(imgBack);
+  shareImage = loadImage(filename);
+  shareImage.resize(427, 320);
+  image(shareImage, width/2-200, 50);
+
+  btnPicOk.display();
+  btnPicNok.display();
 }
 /*
 =======================================
@@ -306,10 +333,6 @@ void drawLeapCursor() {
 void drawLeapLine() {
   fill(255);
   for (Pointable p : leap.getPointableList ()) {
-    PVector position = leap.getTip(p);
-    //line(position.x, position.y, 20, 20);
-    ellipse(position.x, position.y, 20, 20);
-    break;
   }
 }
 
@@ -387,9 +410,8 @@ void changeDifficulty(Difficulty difficulty) {
  */
 
 void mouseDragged() {
-
   stroke(225, 225, 225);
-  strokeWeight(3.0);
+  strokeWeight(4.0);
   strokeJoin(ROUND);
   line(pmouseX, pmouseY, mouseX, mouseY);
 
@@ -406,6 +428,7 @@ void mouseDragged() {
 
 
 void mousePressed() {
+
   if (state == AppState.MAINMENU) {
 
     //the most dirty code you'll ever see of your life
@@ -466,9 +489,18 @@ void mousePressed() {
       currentLvl = 1;
       rectHeight = 180;
       transcounter = 0;
+      pointCounter = 0;
       timer = 0;
     } else if (mouseX > btnShare.bX && mouseX < btnShare.bX + btnShare.bWidth && mouseY > btnShare.bY && mouseY < btnShare.bY + btnShare.bHeight) {
       state = AppState.WEBCAM;
+    }
+  } else if (state == AppState.SHARE) {
+    if (mouseX > btnPicOk.bX && mouseX < btnPicOk.bX + btnPicOk.bWidth && mouseY > btnPicOk.bY && mouseY < btnPicOk.bY + btnPicOk.bHeight) {
+      //tweet the image
+     // Thread tweet = new Thread(new TwitterHandler(799, filename));
+     // tweet.start();
+    } else if (mouseX > btnPicNok.bX && mouseX < btnPicNok.bX + btnPicNok.bWidth && mouseY > btnPicNok.bY && mouseY < btnPicNok.bY + btnPicNok.bHeight) {
+      
     }
   }
 }
@@ -544,6 +576,14 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     } else if (leapX > btnShare.bX && leapX < btnShare.bX + btnShare.bWidth && leapY > btnShare.bY && leapY < btnShare.bY + btnShare.bHeight) {
       state = AppState.WEBCAM;
     }
+  } else if (state == AppState.SHARE) {
+    if (leapX > btnPicOk.bX && leapX < btnPicOk.bX + btnPicOk.bWidth && leapY > btnPicOk.bY && leapY < btnPicOk.bY + btnPicOk.bHeight) {
+      //tweet the image
+      // Thread tweet = new Thread(new TwitterHandler(799, filename));
+      // tweet.start();
+    } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
+      
+    }
   }
 }
 
@@ -551,11 +591,6 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
 
   float leapX = gesture.position().getX();
   float leapY = gesture.position().getY();
-
-  stroke(225, 225, 225);
-  strokeWeight(10);
-  strokeJoin(ROUND);
-  // line(pmouseX, pmouseY, leapX, leapY);
 
   for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
@@ -581,12 +616,12 @@ public void circleGestureRecognized(CircleGesture gesture, String clockwiseness)
     } else if (clockwiseness == "counterclockwise") {
       state = AppState.MAINMENU;
     }
-  } 
+  }
 }
 
 void keyPressed() {
-  /*
- HiscoreEntry e = new HiscoreEntry("JAN", 21000);
+  /* 
+   HiscoreEntry e = new HiscoreEntry("JAN", 21000);
    hh.saveHiscore(e);
    */
 }
