@@ -27,11 +27,10 @@ class Knight {
   public Knight(float x, float y) {
     listSetup();
     knightSetup();
-    //this.bombImage = loadImage("");
+    this.bombImage = loadImage("apple.png");
     this.x = x;
     this.y = y;
     
-
     this.speedX = random(-2, 2);
     this.speedY = random(-15, -10);
     this.r = 50;
@@ -97,6 +96,7 @@ class Knight {
   private void knightSetup() {
     this.knightIndex = (int)(random(0, 4));
     this.currentKnight = images.get(this.knightIndex);
+  //  this.isBomb =(random(2)<1); 
   }
 
   private void gravity() {
@@ -125,9 +125,8 @@ class Knight {
       } else {
         image(cutImages.get(knightIndex), x, y);
       }
-    } else {
+    } else
       image(bombImage, x, y);
     }
   }
-}
 

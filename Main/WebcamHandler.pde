@@ -34,26 +34,24 @@ class WebcamHandler {
           cam.start();
           break;
         }
-        
       }
     }
   }
-  
+
   //methods
   public void drawCam() {
     if (cam != null && cam.available()) {
       cam.read();
     }
-          image(cam, 0, 0);
+    image(cam, 0, 0);
   }
-  
-  private void printAllWebcams(){
+
+  private void printAllWebcams() {
     println("available cameras:");
     String[] cameras = Capture.list();
-    for(String s : cameras){
+    for (String s : cameras) {
       println(s);
-    }    
+    }
   }
-  
 }
 

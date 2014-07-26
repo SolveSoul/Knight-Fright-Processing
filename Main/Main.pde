@@ -263,7 +263,7 @@ void drawHiscores() {
 
 
 void drawCountDown(int counter) {
-  fill(#3c2415);
+  fill(255);
   textSize(120);
   if (counter <= 60) {
     text("3", 300, 230);
@@ -307,7 +307,7 @@ void drawLeapLine() {
   for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
     //line(position.x, position.y, 20, 20);
-    //  ellipse(position.x, position.y, 1, 1);
+    ellipse(position.x, position.y, 20, 20);
     break;
   }
 }
