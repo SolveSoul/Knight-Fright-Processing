@@ -51,7 +51,7 @@ LeapButton btnShare;
 
 //webcam
 WebcamHandler webcam;
-
+int counter; 
 /*
 =================================
  Processing Main methods
@@ -108,6 +108,9 @@ void draw() {
 
   if (state == AppState.WEBCAM) {
     drawCamera();
+    counter++;
+    drawCountDown(counter);
+    
   } else if (state == AppState.MAINMENU) {
     drawMainMenu();
     drawLeapCursor();
@@ -258,6 +261,32 @@ void drawHiscores() {
   }
 }
 
+
+void drawCountDown(int counter) {
+  fill(#3c2415);
+  textSize(120);
+  if (counter <= 60) {
+    text("3", 300, 230);
+  } else if (counter > 60 && counter <=120) {
+    text("2", 310, 230);
+  } else if (counter > 120 && counter <=180) {
+    text("1", 310, 230);
+  }  
+  if (counter == 240) {
+    takePicture();
+  }
+}
+
+void takePicture() {
+  //save the image
+  Calendar cal = Calendar.getInstance();
+  String filename = cal.getTime().toString().replace(":", "") + ".png";
+  saveFrame(filename);
+
+  //tweet the image
+  // Thread tweet = new Thread(new TwitterHandler(799, filename));
+  // tweet.start();
+}
 /*
 =======================================
  (Almost) Always active draw methods
@@ -282,6 +311,8 @@ void drawLeapLine() {
     break;
   }
 }
+
+
 /*
 =================================
  Helpful methods
@@ -375,15 +406,6 @@ void mouseDragged() {
 
 void mousePressed() {
   if (state == AppState.WEBCAM) {
-
-    //save the image
-    Calendar cal = Calendar.getInstance();
-    String filename = cal.getTime().toString().replace(":", "") + ".png";
-    saveFrame(filename);
-
-    //tweet the image
-    // Thread tweet = new Thread(new TwitterHandler(799, filename));
-    // tweet.start();
   } else if (state == AppState.MAINMENU) {
 
     //the most dirty code you'll ever see of your life
