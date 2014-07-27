@@ -44,7 +44,7 @@ class TwitterHandler implements Runnable {
 
   public void tweetScore() {
     try {
-      StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do betteore);
+      StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do better?");
       File img = new File(sketchPath(imageName));
       status.setMedia(img);
       twitter.updateStatus(status);
