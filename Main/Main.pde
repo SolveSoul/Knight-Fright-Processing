@@ -300,8 +300,6 @@ void takePicture() {
 
   File file = new File(filename);
   if (!file.exists()) {
-    //webcam.stopCam();
-    //  drawSharePicture(filename);
     state = AppState.SHARE;
   }
 }
@@ -497,8 +495,8 @@ void mousePressed() {
   } else if (state == AppState.SHARE) {
     if (mouseX > btnPicOk.bX && mouseX < btnPicOk.bX + btnPicOk.bWidth && mouseY > btnPicOk.bY && mouseY < btnPicOk.bY + btnPicOk.bHeight) {
       //tweet the image
-     Thread tweet = new Thread(new TwitterHandler(799, filename));
-     tweet.start();
+     // Thread tweet = new Thread(new TwitterHandler(799, filename));
+     // tweet.start();
     } else if (mouseX > btnPicNok.bX && mouseX < btnPicNok.bX + btnPicNok.bWidth && mouseY > btnPicNok.bY && mouseY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;

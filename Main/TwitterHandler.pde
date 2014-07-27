@@ -19,7 +19,7 @@ class TwitterHandler implements Runnable {
   public TwitterHandler(int score, String imageName) {
 
     boolean success = getApiKeys();
-    this.score = pointCounter;
+    this.score = score;
     this.imageName = imageName;
     
     if (success) {
@@ -44,7 +44,7 @@ class TwitterHandler implements Runnable {
 
   public void tweetScore() {
     try {
-      StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do better?");
+      StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do betteore);
       File img = new File(sketchPath(imageName));
       status.setMedia(img);
       twitter.updateStatus(status);
