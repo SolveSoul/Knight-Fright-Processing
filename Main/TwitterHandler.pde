@@ -19,7 +19,7 @@ class TwitterHandler implements Runnable {
   public TwitterHandler(int score, String imageName) {
 
     boolean success = getApiKeys();
-    this.score = score;
+    this.score = pointCounter;
     this.imageName = imageName;
     
     if (success) {
