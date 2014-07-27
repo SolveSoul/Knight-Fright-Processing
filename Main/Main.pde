@@ -18,6 +18,7 @@ float camWidth = 640;
 float camHeight = 480;
 String filename;
 PImage shareImage;
+PImage shareBorder;
 
 //Menu fields
 Difficulty diff;
@@ -51,13 +52,15 @@ LeapButton btnRestart;
 LeapButton btnShare;
 LeapButton btnPicOk;
 LeapButton btnPicNok;
+
 //webcam
 WebcamHandler webcam;
 int counter = 0; 
+
 /*
 =================================
  Processing Main methods
-=================================
+ =================================
  */
 
 void setup() {
@@ -290,6 +293,8 @@ void drawCountDown(int counter) {
 
 void takePicture() {
   //save the image
+  shareBorder = loadImage("imageBorder.png");
+  image(shareBorder, 0,0);
   Calendar cal = Calendar.getInstance();
   filename = cal.getTime().toString().replace(":", "") + ".png";
   saveFrame(filename);
@@ -491,8 +496,8 @@ void mousePressed() {
   } else if (state == AppState.SHARE) {
     if (mouseX > btnPicOk.bX && mouseX < btnPicOk.bX + btnPicOk.bWidth && mouseY > btnPicOk.bY && mouseY < btnPicOk.bY + btnPicOk.bHeight) {
       //tweet the image
-     Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
-     tweet.start();
+      Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
+      tweet.start();
     } else if (mouseX > btnPicNok.bX && mouseX < btnPicNok.bX + btnPicNok.bWidth && mouseY > btnPicNok.bY && mouseY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
@@ -576,7 +581,6 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       //tweet the image
       Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
       tweet.start();
-   
     } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
