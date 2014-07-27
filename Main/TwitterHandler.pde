@@ -41,7 +41,7 @@ class TwitterHandler implements Runnable {
   public void run(){
     tweetScore();
   }
-
+  
   public void tweetScore() {
     try {
       StatusUpdate status = new StatusUpdate("I just scored " + score + " on Knight Fright. Can you do better?");

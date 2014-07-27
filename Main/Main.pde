@@ -25,7 +25,6 @@ ArrayList<LeapButton> bGroup = new ArrayList<LeapButton>();
 LeapButton startGame;
 LeapButton btnHiscores;
 
-
 //Game fields
 int rectHeight = 180;
 ArrayList knightArray = new ArrayList();
@@ -58,7 +57,7 @@ int counter = 0;
 /*
 =================================
  Processing Main methods
- =================================
+=================================
  */
 
 void setup() {
@@ -107,7 +106,6 @@ void setup() {
   font = createFont("Knights Quest", 25);
 }
 
-
 void draw() {
   background(imgBack);
   textFont(font);
@@ -141,7 +139,7 @@ void draw() {
 
 /*=================================
  Processing draw methods
- =================================
+ ==================================
  */
 
 void drawCamera() {
@@ -295,8 +293,6 @@ void takePicture() {
   Calendar cal = Calendar.getInstance();
   filename = cal.getTime().toString().replace(":", "") + ".png";
   saveFrame(filename);
-
-
 
   File file = new File(filename);
   if (!file.exists()) {
@@ -580,6 +576,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       //tweet the image
       Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
       tweet.start();
+   
     } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
