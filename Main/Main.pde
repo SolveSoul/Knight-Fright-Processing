@@ -578,8 +578,8 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
   } else if (state == AppState.SHARE) {
     if (leapX > btnPicOk.bX && leapX < btnPicOk.bX + btnPicOk.bWidth && leapY > btnPicOk.bY && leapY < btnPicOk.bY + btnPicOk.bHeight) {
       //tweet the image
-     // Thread tweet = new Thread(new TwitterHandler(799, filename));
-     // tweet.start();
+      // Thread tweet = new Thread(new TwitterHandler(799, filename));
+      // tweet.start();
     } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
