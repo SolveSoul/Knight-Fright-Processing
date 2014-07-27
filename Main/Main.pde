@@ -54,7 +54,7 @@ LeapButton btnPicOk;
 LeapButton btnPicNok;
 //webcam
 WebcamHandler webcam;
-int counter; 
+int counter = 0; 
 /*
 =================================
  Processing Main methods
@@ -500,7 +500,8 @@ void mousePressed() {
      // Thread tweet = new Thread(new TwitterHandler(799, filename));
      // tweet.start();
     } else if (mouseX > btnPicNok.bX && mouseX < btnPicNok.bX + btnPicNok.bWidth && mouseY > btnPicNok.bY && mouseY < btnPicNok.bY + btnPicNok.bHeight) {
-      
+      state = AppState.WEBCAM;
+      counter = 0;
     }
   }
 }
@@ -582,7 +583,8 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       // Thread tweet = new Thread(new TwitterHandler(799, filename));
       // tweet.start();
     } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
-      
+      state = AppState.WEBCAM;
+      counter = 0;
     }
   }
 }
