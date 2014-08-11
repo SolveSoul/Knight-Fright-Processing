@@ -21,6 +21,7 @@ class Knight {
   private ArrayList<PImage> images;
   private ArrayList<PImage> cutImages;
   private PImage bombImage;
+  private PImage cutBombImage;
   Difficulty diff;
 
   //ctor
@@ -28,6 +29,7 @@ class Knight {
     listSetup();
     knightSetup();
     this.bombImage = loadImage("apple.png");
+    this.cutBombImage = loadImage("appleCut.png");
     this.x = x;
     this.y = y;
     
@@ -125,8 +127,12 @@ class Knight {
       } else {
         image(cutImages.get(knightIndex), x, y);
       }
-    } else
-      image(bombImage, x, y);
+    } else {
+      if (!isCut) {
+        image(bombImage, x, y);
+      } else 
+        image(cutBombImage, x, y);
+      }
     }
   }
 

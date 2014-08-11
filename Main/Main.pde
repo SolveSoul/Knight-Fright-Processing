@@ -154,6 +154,7 @@ void drawMainMenu() {
   textSize(60);
   fill(#3c2415);
   text("Knight Fright", width/2 - 150, 55);
+  
   //draw start button  
   textSize(30);
   startGame.display();
@@ -403,7 +404,6 @@ void changeDifficulty(Difficulty difficulty) {
   }
 }
 
-
 /*
 =================================
  Processing + leap events
@@ -416,10 +416,14 @@ void mouseDragged() {
   strokeJoin(ROUND);
   line(pmouseX, pmouseY, mouseX, mouseY);
 
-  for (int i = 0; i < knightArray.size (); i++)
-  {
+  for (int i = 0; i < knightArray.size (); i++){
     Knight myKnight = (Knight) knightArray.get(i);
-    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut()) {
+    
+    if(dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut() && myKnight.isBomb){
+       myKnight.setIsCut(true);
+       myKnight.setKnightIndex(myKnight.knightIndex);
+      pointCounter -= 100;
+    } else if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
       myKnight.setIsCut(true);
       myKnight.setKnightIndex(myKnight.knightIndex);
       pointCounter += ((basePoints * currentLvl) + (lives * 4));
@@ -603,7 +607,9 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
 
   for (int i = 0; i < knightArray.size (); i++) {
     Knight myKnight = (Knight) knightArray.get(i);
-    if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut()) {
+    if(myKnight.isBomb){
+      pointCounter -= 100;
+    } else if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
       myKnight.setIsCut(true);
       myKnight.setKnightIndex(myKnight.knightIndex);
       pointCounter += ((basePoints * currentLvl) + (lives * 4));
