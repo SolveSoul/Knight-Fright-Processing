@@ -17,10 +17,6 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-#Screenshots
-/
-*.png
-
 # =========================
 # Operating System Files
 # =========================

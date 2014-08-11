@@ -33,7 +33,7 @@ class Knight {
     
     this.speedX = random(-2, 2);
     this.speedY = random(-15, -10);
-    this.r = 50;
+    this.r = 62;
   }
 
   //getters & setters
@@ -96,7 +96,7 @@ class Knight {
   private void knightSetup() {
     this.knightIndex = (int)(random(0, 4));
     this.currentKnight = images.get(this.knightIndex);
-  //  this.isBomb =(random(2)<1); 
+    this.isBomb = (random(8)<1); 
   }
 
   private void gravity() {

@@ -34,6 +34,7 @@ int currentLvl = 1;
 int lives = 3;
 int timer;
 int appearanceTime;    //the higher this field, the slower the knights spawn
+int basePoints = 10;
 
 long startTime;
 long counterTime;
@@ -166,6 +167,7 @@ void drawMainMenu() {
 
 void drawGame() {
   background(imgGameBack);
+
   //Force garbage collection, just to be safe
   if (millis() % 150 == 0) {
     System.gc();
@@ -417,10 +419,10 @@ void mouseDragged() {
   for (int i = 0; i < knightArray.size (); i++)
   {
     Knight myKnight = (Knight) knightArray.get(i);
-    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius()) {
+    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut()) {
       myKnight.setIsCut(true);
       myKnight.setKnightIndex(myKnight.knightIndex);
-      pointCounter++;
+      pointCounter += ((basePoints * currentLvl) + (lives * 4));
     }
   }
 }
@@ -430,7 +432,7 @@ void mousePressed() {
 
   if (state == AppState.MAINMENU) {
 
-    //the most dirty code you'll ever see of your life
+    //the most dirty code you'll ever see in your life
     for (LeapButton l : bGroup) {
       if (mouseX > l.bX && mouseX < l.bX + l.bWidth && mouseY > l.bY && mouseY < l.bY + l.bHeight) {
         if (l.getLabelText().toLowerCase().equals("easy")) {
@@ -599,13 +601,12 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
     leapY = position.y;
   }
 
-  for (int i = 0; i < knightArray.size (); i++)
-  {
+  for (int i = 0; i < knightArray.size (); i++) {
     Knight myKnight = (Knight) knightArray.get(i);
-    if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius()) {
+    if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut()) {
       myKnight.setIsCut(true);
       myKnight.setKnightIndex(myKnight.knightIndex);
-      pointCounter++;
+      pointCounter += ((basePoints * currentLvl) + (lives * 4));
     }
   }
 }
