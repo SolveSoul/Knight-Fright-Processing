@@ -28,8 +28,8 @@ class Knight {
   public Knight(float x, float y) {
     listSetup();
     knightSetup();
-    this.bombImage = loadImage("apple.png");
-    this.cutBombImage = loadImage("appleCut.png");
+    this.bombImage = loadImage("tonTnt.png");
+    this.cutBombImage = loadImage("boom.png");
     this.x = x;
     this.y = y;
     
