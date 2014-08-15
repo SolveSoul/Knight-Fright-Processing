@@ -188,6 +188,18 @@ void drawGame() {
   //Change appstate when lives equals zero
   if (lives == 0) {
     state = AppState.GAMEOVER;
+
+    //save the score when it's a hiscore
+    HiscoreEntry entry = scores.get(scores.size() - 1);
+    if (scores.size() <= 10) {
+      if (pointCounter > entry.getScore()) {
+        hh.saveHiscore(new HiscoreEntry("AXE", pointCounter));
+      }
+    } else {
+      if (pointCounter > entry.getScore()) {
+        hh.saveHiscore(new HiscoreEntry("AXE", pointCounter));
+      }
+    }
   }
 
   livesChanged(false);
@@ -210,8 +222,7 @@ void drawGame() {
   timer++;
 
   //Spawn the knights
-  if (System.currentTimeMillis() - counterTime > appearanceTime)
-  {
+  if (System.currentTimeMillis() - counterTime > appearanceTime) {
     Knight myKnight = new Knight(random(width - 100), random(height, height - 100));
     knightArray.add(myKnight);
     counterTime = System.currentTimeMillis();
@@ -448,7 +459,7 @@ void takePicture() {
   }
 }
 
-void checkKnightHit(){
+void checkKnightHit() {
   float leapX = -1;
   float leapY = -1;
 
