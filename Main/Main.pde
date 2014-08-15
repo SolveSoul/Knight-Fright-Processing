@@ -90,7 +90,7 @@ void setup() {
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 130, 150, 60, "Hard"));
   startGame = new LeapButton(width/2 - 90, height/2 - 80, 180, 60, "Start game");
-  btnHiscores = new LeapButton(width - 150, height - 60, 140, 50, "hiscores");
+  btnHiscores = new LeapButton(width - 150, height - 60, 140, 50, loadImage("goToHiScore.png"));
   changeDifficulty(Difficulty.MEDIUM);
 
   //game settings
@@ -100,7 +100,7 @@ void setup() {
   //hiscores setup
   hh = new HiscoreHandler();
   scores = hh.getHiscores();
-  btnBackToMenu = new LeapButton((width-150), height - 60, 140, 50, "back to menu");
+  btnBackToMenu = new LeapButton((width-150), height - 60, 140, 50, loadImage("goToMenu.png"));
 
   //next level, Restart & Share buttons
   btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");

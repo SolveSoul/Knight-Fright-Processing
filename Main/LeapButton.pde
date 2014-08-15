@@ -1,7 +1,7 @@
 /*
 Custom buttons that'll work with the LeapMotion.
-The isSelected property indicates whether or not the button can be selected with a stroke highlight.
-*/
+ The isSelected property indicates whether or not the button can be selected with a stroke highlight.
+ */
 
 class LeapButton {
 
@@ -17,6 +17,7 @@ class LeapButton {
   private color labelColor;
   private color rectColor;
   private color strokeColor;
+  private PImage icon;
 
 
   public void setLabelColor(color lColor) {
@@ -34,7 +35,7 @@ class LeapButton {
   public boolean getIsSelected() {
     return this.isSelected;
   }
-  
+
   public String getLabelText() {
     return this.labelText;
   }
@@ -43,6 +44,7 @@ class LeapButton {
     this.strokeThickness = thickness;
   }
 
+  //ctor with text
   public LeapButton(float bX, float bY, float bWidth, float bHeight, String labelText) {
     this.bWidth = bWidth;
     this.bHeight = bHeight;
@@ -55,6 +57,19 @@ class LeapButton {
     this.strokeThickness = 3;
   }
 
+  //ctor with image
+  public LeapButton(float bX, float bY, float bWidth, float bHeight, PImage icon) {
+    this.bWidth = bWidth;
+    this.bHeight = bHeight;
+    this.bX = bX;
+    this.bY = bY;
+    this.labelColor = #3c2415;
+    this.rectColor = 255;
+    this.strokeColor = #3c2415;
+    this.strokeThickness = 3;
+    this.icon = icon;
+  }
+
   public void display() {
     textAlign(CENTER);
 
@@ -63,15 +78,19 @@ class LeapButton {
       strokeWeight(strokeThickness);
     }
 
-    fill(rectColor,90);
+    fill(rectColor, 90);
     rect(bX, bY, bWidth, bHeight);
 
-    fill(labelColor);
-    text(labelText, bX + bWidth/2, bY + bHeight/2 + 5);
+    if (icon == null) {
+      fill(labelColor);
+      text(labelText, bX + bWidth/2, bY + bHeight/2 + 5);
+    } else {
+      image(icon, bX + bWidth/2, bY + bHeight/2 + 5);
+    }
+
 
     noStroke();
     textAlign(CORNER);
-    
   }
 
   @Override
