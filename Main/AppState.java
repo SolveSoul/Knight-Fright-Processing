@@ -1,4 +1,4 @@
-enum AppState{
+public enum AppState{
   WEBCAM,
   GAME,
   MAINMENU,

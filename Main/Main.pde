@@ -1,3 +1,4 @@
+//imports
 import com.onformative.leap.*;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.ScreenTapGesture;
@@ -36,10 +37,12 @@ int timer;
 int appearanceTime;    //the higher this field, the slower the knights spawn
 int basePoints = 10;
 
+//Game timer fields
 long startTime;
 long counterTime;
 
-int transcounter; // level transition indicator
+//Level transition fields
+int transcounter;
 PImage imgTransition;
 
 //hiscores
@@ -47,14 +50,14 @@ ArrayList<HiscoreEntry> scores;
 HiscoreHandler hh;
 LeapButton btnBackToMenu;
 
-//Next level / Restart / Share
+//Next level, Restart & Share buttons
 LeapButton btnNextLevel;
 LeapButton btnRestart;
 LeapButton btnShare;
 LeapButton btnPicOk;
 LeapButton btnPicNok;
 
-//webcam
+//Webcam fields
 WebcamHandler webcam;
 int counter = 0; 
 
@@ -91,22 +94,22 @@ void setup() {
   startTime = System.currentTimeMillis();
   counterTime = System.currentTimeMillis();
 
-  //scores
+  //hiscores setup
   hh = new HiscoreHandler();
   scores = hh.getHiscores();
   btnBackToMenu = new LeapButton((width-150), height - 60, 140, 50, "back to menu");
 
-  //next level / Restart / Share
+  //next level, Restart & Share buttons
   btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");
   btnRestart = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Try again");
   btnShare = new LeapButton(width/2 - 90, height/2 + 100, 180, 60, "Share");
   btnPicOk = new LeapButton(120, 380, 180, 60, "Share on twitter");
   btnPicNok = new LeapButton(365, 380, 180, 60, "Take new picture");
 
-  //webcam
+  //webcam init
   webcam = new WebcamHandler(this);
 
-  //font
+  //font init
   font = createFont("Knights Quest", 25);
 }
 
@@ -294,20 +297,6 @@ void drawCountDown(int counter) {
   }
 }
 
-void takePicture() {
-  //save the image
-  shareBorder = loadImage("imageBorder.png");
-  image(shareBorder, 0,0);
-  Calendar cal = Calendar.getInstance();
-  filename = cal.getTime().toString().replace(":", "") + ".png";
-  saveFrame(filename);
-
-  File file = new File(filename);
-  if (!file.exists()) {
-    state = AppState.SHARE;
-  }
-}
-
 void drawShareMenu(String filename) {
   background(imgBack);
   shareImage = loadImage(filename);
@@ -401,6 +390,20 @@ void changeDifficulty(Difficulty difficulty) {
   } else {
     bGroup.get(2).setIsSelected(true);
     appearanceTime = 1000;
+  }
+}
+
+void takePicture() {
+  //save the image
+  shareBorder = loadImage("imageBorder.png");
+  image(shareBorder, 0,0);
+  Calendar cal = Calendar.getInstance();
+  filename = cal.getTime().toString().replace(":", "") + ".png";
+  saveFrame(filename);
+
+  File file = new File(filename);
+  if (!file.exists()) {
+    state = AppState.SHARE;
   }
 }
 
@@ -510,6 +513,7 @@ void mousePressed() {
     }
   }
 }
+
 public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
   float leapX = gesture.position().getX();
