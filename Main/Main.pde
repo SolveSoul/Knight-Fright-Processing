@@ -2,7 +2,6 @@
 import com.onformative.leap.*;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.ScreenTapGesture;
-import com.leapmotion.leap.SwipeGesture;
 import com.leapmotion.leap.CircleGesture;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -84,7 +83,6 @@ void setup() {
   //general inits
   leap = new LeapMotionP5(this);
   leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
-  leap.enableGesture(Gesture.Type.TYPE_SWIPE);
   leap.enableGesture(Gesture.Type.TYPE_CIRCLE);
 
   //main menu settings
@@ -451,7 +449,25 @@ void takePicture() {
 }
 
 void checkKnightHit(){
+  float leapX = -1;
+  float leapY = -1;
 
+  for (Pointable p : leap.getPointableList ()) {
+    PVector position = leap.getTip(p);
+    leapX = position.x;
+    leapY = position.y;
+  }
+
+  for (int i = 0; i < knightArray.size (); i++) {
+    Knight myKnight = (Knight) knightArray.get(i);
+    if (myKnight.isBomb) {
+      pointCounter -= 100;
+    } else if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
+      myKnight.setIsCut(true);
+      myKnight.setKnightIndex(myKnight.knightIndex);
+      pointCounter += ((basePoints * currentLvl) + (lives * 4));
+    }
+  }
 }
 
 /*
@@ -641,29 +657,6 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
-    }
-  }
-}
-
-public void swipeGestureRecognized(SwipeGesture gesture) {
-
-  float leapX = gesture.position().getX();
-  float leapY = gesture.position().getY();
-
-  for (Pointable p : leap.getPointableList ()) {
-    PVector position = leap.getTip(p);
-    leapX = position.x;
-    leapY = position.y;
-  }
-
-  for (int i = 0; i < knightArray.size (); i++) {
-    Knight myKnight = (Knight) knightArray.get(i);
-    if (myKnight.isBomb) {
-      pointCounter -= 100;
-    } else if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
-      myKnight.setIsCut(true);
-      myKnight.setKnightIndex(myKnight.knightIndex);
-      pointCounter += ((basePoints * currentLvl) + (lives * 4));
     }
   }
 }
