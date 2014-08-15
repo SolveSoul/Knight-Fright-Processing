@@ -45,10 +45,15 @@ long counterTime;
 int transcounter;
 PImage imgTransition;
 
-//hiscores
+//hiscore fields
 ArrayList<HiscoreEntry> scores;
 HiscoreHandler hh;
 LeapButton btnBackToMenu;
+
+//leap trail fields
+PVector circlePosition;
+ArrayList<PVector> circleTrail;
+int trailSize = 10;
 
 //Next level, Restart & Share buttons
 LeapButton btnNextLevel;
@@ -106,6 +111,10 @@ void setup() {
   btnPicOk = new LeapButton(120, 380, 180, 60, "Share on twitter");
   btnPicNok = new LeapButton(365, 380, 180, 60, "Take new picture");
 
+  //leap trail setup
+  circlePosition = new PVector(width*0.5, width*0.5);
+  circleTrail = new ArrayList<PVector>();
+
   //webcam init
   webcam = new WebcamHandler(this);
 
@@ -127,6 +136,7 @@ void draw() {
   } else if (state == AppState.GAME) {
     drawGame();
     drawLeapLine();
+    checkKnightHit();
   } else if (state == AppState.GAMEOVER) {
     drawGameOver();
     drawLeapCursor();
@@ -157,7 +167,7 @@ void drawMainMenu() {
   textSize(60);
   fill(#3c2415);
   text("Knight Fright", width/2 - 150, 55);
-  
+
   //draw start button  
   textSize(30);
   startGame.display();
@@ -322,8 +332,41 @@ void drawLeapCursor() {
 }
 
 void drawLeapLine() {
-  fill(255);
+
+  //trail setup
+  fill(255, 0, 0);
+  noStroke();
+
+  int trailLength;
+  float leapX = -1;
+  float leapY = -1;
+
   for (Pointable p : leap.getPointableList ()) {
+    PVector position = leap.getTip(p);
+    leapX = position.x;
+    leapY = position.y;
+    break;
+  }
+
+  if (leapX != -1) {
+    circlePosition = new PVector(leapX, leapY);
+    circleTrail.add(circlePosition);
+
+    trailLength = circleTrail.size() - 2;
+
+    for (int i = 0; i < trailLength; i++) {
+      PVector currentTrail = circleTrail.get(i);
+      PVector previousTrail = circleTrail.get(i + 1);
+
+      stroke(255, 255*i/trailLength);
+      line(currentTrail.x, currentTrail.y, previousTrail.x, previousTrail.y);
+    }
+
+    ellipse(circlePosition.x, circlePosition.y, 10, 10);
+
+    if (trailLength >= trailSize) {
+      circleTrail.remove(0);
+    }
   }
 }
 
@@ -396,7 +439,7 @@ void changeDifficulty(Difficulty difficulty) {
 void takePicture() {
   //save the image
   shareBorder = loadImage("imageBorder.png");
-  image(shareBorder, 0,0);
+  image(shareBorder, 0, 0);
   Calendar cal = Calendar.getInstance();
   filename = cal.getTime().toString().replace(":", "") + ".png";
   saveFrame(filename);
@@ -405,6 +448,10 @@ void takePicture() {
   if (!file.exists()) {
     state = AppState.SHARE;
   }
+}
+
+void checkKnightHit(){
+
 }
 
 /*
@@ -419,12 +466,12 @@ void mouseDragged() {
   strokeJoin(ROUND);
   line(pmouseX, pmouseY, mouseX, mouseY);
 
-  for (int i = 0; i < knightArray.size (); i++){
+  for (int i = 0; i < knightArray.size (); i++) {
     Knight myKnight = (Knight) knightArray.get(i);
-    
-    if(dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut() && myKnight.isBomb){
-       myKnight.setIsCut(true);
-       myKnight.setKnightIndex(myKnight.knightIndex);
+
+    if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut() && myKnight.isBomb) {
+      myKnight.setIsCut(true);
+      myKnight.setKnightIndex(myKnight.knightIndex);
       pointCounter -= 100;
     } else if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
       myKnight.setIsCut(true);
@@ -611,7 +658,7 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
 
   for (int i = 0; i < knightArray.size (); i++) {
     Knight myKnight = (Knight) knightArray.get(i);
-    if(myKnight.isBomb){
+    if (myKnight.isBomb) {
       pointCounter -= 100;
     } else if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
       myKnight.setIsCut(true);
