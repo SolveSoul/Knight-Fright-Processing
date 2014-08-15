@@ -6,5 +6,6 @@ public enum AppState{
   LEVELCOMPLETE,
   HISCORES,
   LEVELTRANSITION,
-  SHARE
+  SHARE,
+  MOVIE
 }

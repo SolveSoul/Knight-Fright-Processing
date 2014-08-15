@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 //general fields
-AppState state = AppState.MAINMENU;
+AppState state = AppState.MOVIE;
 LeapMotionP5 leap;
 PImage imgBack;
 PImage imgGameBack;
@@ -63,7 +63,10 @@ LeapButton btnPicNok;
 
 //Webcam fields
 WebcamHandler webcam;
-int counter = 0; 
+int counter = 0;
+
+//movie fields
+MoviePlayer infoMovie;
 
 /*
 =================================
@@ -118,6 +121,9 @@ void setup() {
 
   //font init
   font = createFont("Knights Quest", 25);
+
+  //movie init
+  infoMovie = new MoviePlayer(this, "movie.mov");
 }
 
 void draw() {
@@ -149,6 +155,8 @@ void draw() {
     drawLevelTransition(transcounter);
   } else if (state == AppState.SHARE) {
     drawShareMenu(filename);
+  } else if (state == AppState.MOVIE) {
+    drawMovie();
   }
 }
 
@@ -325,6 +333,17 @@ void drawShareMenu(String filename) {
   btnPicOk.display();
   btnPicNok.display();
 }
+
+void drawMovie() {
+  infoMovie.drawMovie();
+  
+  //if the movie is finished, return to main menu
+  if (infoMovie.infoMovie.time() == infoMovie.duration) {
+    state = AppState.MAINMENU;
+    infoMovie.isPlaying = false;
+  }
+}
+
 /*
 =======================================
  (Almost) Always active draw methods
@@ -704,5 +723,9 @@ void keyPressed() {
    HiscoreEntry e = new HiscoreEntry("JAN", 21000);
    hh.saveHiscore(e);
    */
+}
+
+void movieEvent(Movie m) {
+  m.read();
 }
 
