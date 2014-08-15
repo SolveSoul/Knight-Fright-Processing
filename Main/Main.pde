@@ -460,8 +460,9 @@ void checkKnightHit(){
 
   for (int i = 0; i < knightArray.size (); i++) {
     Knight myKnight = (Knight) knightArray.get(i);
-    if (myKnight.isBomb) {
+    if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && myKnight.isBomb) {
       pointCounter -= 100;
+      myKnight.setIsCut(true);
     } else if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
       myKnight.setIsCut(true);
       myKnight.setKnightIndex(myKnight.knightIndex);
