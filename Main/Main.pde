@@ -472,7 +472,16 @@ void checkKnightHit() {
   for (int i = 0; i < knightArray.size (); i++) {
     Knight myKnight = (Knight) knightArray.get(i);
     if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && myKnight.isBomb) {
-      pointCounter -= 100;
+      
+      //subtract 100 points for hitting a bomb, prevent going negative
+      int tempScore = pointCounter - 100;
+      
+      if(tempScore > 0){
+        pointCounter -= 100;
+      } else {
+        pointCounter = 0;
+      }
+      
       myKnight.setIsCut(true);
     } else if (dist(myKnight.getX(), myKnight.getY(), leapX, leapY) < myKnight.getRadius() && !myKnight.getIsCut() && !myKnight.isBomb) {
       myKnight.setIsCut(true);
