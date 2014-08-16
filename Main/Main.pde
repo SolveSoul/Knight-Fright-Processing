@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 //general fields
-AppState state = AppState.MOVIE;
+AppState state = AppState.MAINMENU;
 LeapMotionP5 leap;
 PImage imgBack;
 PImage imgGameBack;
@@ -25,6 +25,7 @@ Difficulty diff;
 ArrayList<LeapButton> bGroup = new ArrayList<LeapButton>();
 LeapButton startGame;
 LeapButton btnHiscores;
+LeapButton btnInfo;
 
 //Game fields
 int rectHeight = 180;
@@ -93,6 +94,7 @@ void setup() {
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 130, 150, 60, "Hard"));
   startGame = new LeapButton(width/2 - 90, height/2 - 80, 180, 60, "Start game");
+  btnInfo = new LeapButton(width/2 +270, 20, 40,40, "i");
   btnHiscores = new LeapButton(width - 150, height - 60, 140, 50, loadImage("goToHiScore.png"));
   changeDifficulty(Difficulty.MEDIUM);
 
@@ -157,7 +159,7 @@ void draw() {
     drawShareMenu(filename);
   } else if (state == AppState.MOVIE) {
     drawMovie();
-  }
+  } 
 }
 
 /*=================================
@@ -178,7 +180,8 @@ void drawMainMenu() {
   textSize(30);
   startGame.display();
   btnHiscores.display();
-
+  btnInfo.display();
+  
   //draw difficultybuttons
   for (LeapButton l : bGroup) {
     l.display();
@@ -571,6 +574,10 @@ void mousePressed() {
     if (mouseX > btnHiscores.bX && mouseX < btnHiscores.bX + btnHiscores.bWidth && mouseY > btnHiscores.bY && mouseY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
     }
+    
+    if (mouseX > btnInfo.bX && mouseX < btnInfo.bX + btnInfo.bWidth && mouseY > btnInfo.bY && mouseY < btnInfo.bY + btnInfo.bHeight) {
+      state = AppState.MOVIE;
+    }
   } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
     if (mouseX > btnBackToMenu.bX && mouseX < btnBackToMenu.bX + btnBackToMenu.bWidth && mouseY > btnBackToMenu.bY && mouseY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
@@ -655,6 +662,10 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     //check hiscores button
     if (leapX > btnHiscores.bX && leapX < btnHiscores.bX + btnHiscores.bWidth && leapY > btnHiscores.bY && leapY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
+    }
+    
+    if (leapX > btnInfo.bX && leapX < btnInfo.bX + btnInfo.bWidth && leapY > btnInfo.bY && leapY < btnInfo.bY + btnInfo.bHeight) {
+      state = AppState.MOVIE;
     }
   } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
