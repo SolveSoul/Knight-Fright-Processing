@@ -157,6 +157,7 @@ void draw() {
     drawLevelTransition(transcounter);
   } else if (state == AppState.SHARE) {
     drawShareMenu(filename);
+    drawLeapCursor();
   } else if (state == AppState.MOVIE) {
     drawMovie();
   } 
@@ -338,6 +339,7 @@ void drawShareMenu(String filename) {
 }
 
 void drawMovie() {
+ 
   infoMovie.drawMovie();
   
   //if the movie is finished, return to main menu
@@ -577,6 +579,8 @@ void mousePressed() {
     
     if (mouseX > btnInfo.bX && mouseX < btnInfo.bX + btnInfo.bWidth && mouseY > btnInfo.bY && mouseY < btnInfo.bY + btnInfo.bHeight) {
       state = AppState.MOVIE;
+      infoMovie.playMovie();
+      
     }
   } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
@@ -624,6 +628,7 @@ void mousePressed() {
       //tweet the image
       Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
       tweet.start();
+      state = AppState.MAINMENU;
     } else if (mouseX > btnPicNok.bX && mouseX < btnPicNok.bX + btnPicNok.bWidth && mouseY > btnPicNok.bY && mouseY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
@@ -666,6 +671,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     
     if (leapX > btnInfo.bX && leapX < btnInfo.bX + btnInfo.bWidth && leapY > btnInfo.bY && leapY < btnInfo.bY + btnInfo.bHeight) {
       state = AppState.MOVIE;
+      infoMovie.playMovie();
     }
   } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
@@ -712,6 +718,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       //tweet the image
       Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
       tweet.start();
+      state = AppState.MAINMENU;
     } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
       state = AppState.WEBCAM;
       counter = 0;
