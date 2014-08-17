@@ -94,7 +94,7 @@ void setup() {
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 130, 150, 60, "Hard"));
   startGame = new LeapButton(width/2 - 90, height/2 - 80, 180, 60, "Start game");
-  btnInfo = new LeapButton(width/2 +270, 20, 40,40, "i");
+  btnInfo = new LeapButton(width/2 +260, 20, 50,50, loadImage("i.png"));
   btnHiscores = new LeapButton(width - 150, height - 60, 140, 50, loadImage("goToHiScore.png"));
   changeDifficulty(Difficulty.MEDIUM);
 
