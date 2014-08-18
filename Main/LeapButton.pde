@@ -85,7 +85,7 @@ class LeapButton {
       fill(labelColor);
       text(labelText, bX + bWidth/2, bY + bHeight/2 + 5);
     } else {
-      image(icon, bX + bWidth/2, bY + bHeight/2-20);
+      image(icon, bX + bWidth/2 -50, bY + bHeight/2-20);
     }
 
 
