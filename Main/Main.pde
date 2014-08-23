@@ -570,7 +570,6 @@ void mouseDragged() {
     if (dist(myKnight.getX(), myKnight.getY(), mouseX, mouseY) < myKnight.getRadius() && !myKnight.getIsCut() && myKnight.isBomb) {
       //subtract 100 points for hitting a bomb, prevent going negative
       int tempScore = pointCounter - 100;
-
       if (tempScore > 0) {
         pointCounter -= 100;
       } else {
