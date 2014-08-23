@@ -162,7 +162,7 @@ void draw() {
     drawGameOver();
     drawLeapCursor();
   } else if (state == AppState.LEVELCOMPLETE) {
-    draweLevelComplete();
+    drawLevelComplete();
     drawLeapCursor();
   } else if (state == AppState.HISCORES) {
     drawHiscores();
@@ -276,7 +276,7 @@ void drawGame() {
   }
 }
 
-void draweLevelComplete() {
+void drawLevelComplete() {
   textSize(50);
   fill(255);
   text("Well done!", width/2-95, 200);
