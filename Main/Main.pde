@@ -3,6 +3,8 @@ import com.onformative.leap.*;
 import com.leapmotion.leap.*;
 import com.leapmotion.leap.ScreenTapGesture;
 import com.leapmotion.leap.CircleGesture;
+import com.leapmotion.leap.SwipeGesture;
+import com.leapmotion.leap.Gesture.State;
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -11,6 +13,7 @@ AppState state = AppState.MAINMENU;
 LeapMotionP5 leap;
 PImage imgBack;
 PImage imgGameBack;
+PImage imgHiscores;
 PFont font; 
 
 //webcam fields
@@ -69,6 +72,11 @@ int counter = 0;
 //movie fields
 MoviePlayer infoMovie;
 
+//new hiscore fields
+LeapScoreSelector selector;
+LeapButton selectLetter;
+LeapButton endLetters;
+
 /*
 =================================
  Processing Main methods
@@ -83,18 +91,20 @@ void setup() {
   imgBack = loadImage("menuBackground.png");
   imgTransition = loadImage("transition.png");
   imgGameBack = loadImage("gameBackground.png");
+  imgHiscores = loadImage("saveScore.png");
 
   //general inits
   leap = new LeapMotionP5(this);
   leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
   leap.enableGesture(Gesture.Type.TYPE_CIRCLE);
+  leap.enableGesture(Gesture.Type.TYPE_SWIPE);
 
   //main menu settings
   bGroup.add(new LeapButton(width/2 - 75, height/2 - 10, 150, 60, "Easy"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 60, 150, 60, "Medium"));
   bGroup.add(new LeapButton(width/2 - 75, height/2 + 130, 150, 60, "Hard"));
   startGame = new LeapButton(width/2 - 90, height/2 - 80, 180, 60, "Start game");
-  btnInfo = new LeapButton(width/2 + 100, height/2 -80, 50,60, loadImage("i.png"));
+  btnInfo = new LeapButton(width/2 + 100, height/2 -80, 50, 60, loadImage("i.png"));
   btnHiscores = new LeapButton(width - 150, height - 60, 140, 50, loadImage("goToHiScore.png"));
   changeDifficulty(Difficulty.MEDIUM);
 
@@ -126,6 +136,11 @@ void setup() {
 
   //movie init
   infoMovie = new MoviePlayer(this, "movie.mov");
+
+  //new hiscore init
+  selector = new LeapScoreSelector();
+  selectLetter = new LeapButton(width/2 - 200, height/2 + 150, 100, 50, "OK");
+  endLetters = new LeapButton(width/2 - 100, height/2 + 150, 100, 50, "END");
 }
 
 void draw() {
@@ -160,7 +175,10 @@ void draw() {
     drawLeapCursor();
   } else if (state == AppState.MOVIE) {
     drawMovie();
-  } 
+  } else if (state == AppState.NEWHISCORE) {
+    drawNewHiscore();
+    drawLeapCursor();
+  }
 }
 
 /*=================================
@@ -182,7 +200,7 @@ void drawMainMenu() {
   startGame.display();
   btnHiscores.display();
   btnInfo.display();
-  
+
   //draw difficultybuttons
   for (LeapButton l : bGroup) {
     l.display();
@@ -202,7 +220,14 @@ void drawGame() {
     state = AppState.GAMEOVER;
 
     //save the score when it's a hiscore
-    HiscoreEntry entry = scores.get(scores.size() - 1);
+    HiscoreEntry entry = null;
+
+    if (scores.size() != 0) {
+      entry = scores.get(scores.size() - 1);
+    } else {
+      entry = new HiscoreEntry("", pointCounter);
+    }   
+
     if (scores.size() <= 10) {
       if (pointCounter > entry.getScore()) {
         hh.saveHiscore(new HiscoreEntry("AXE", pointCounter));
@@ -244,7 +269,7 @@ void drawGame() {
   while (i.hasNext ()) {
     Knight knight = (Knight) i.next();
     knight.run();
-    if (knight.y > height && !knight.getIsCut()) {
+    if (knight.y > height && !knight.getIsCut() && !knight.isBomb) {
       i.remove();
       livesChanged(true);
     }
@@ -339,14 +364,26 @@ void drawShareMenu(String filename) {
 }
 
 void drawMovie() {
- 
+
   infoMovie.drawMovie();
-  
+
   //if the movie is finished, return to main menu
   if (infoMovie.infoMovie.time() == infoMovie.duration) {
     state = AppState.MAINMENU;
     infoMovie.isPlaying = false;
   }
+}
+
+void drawNewHiscore() {
+  background(imgHiscores);
+
+  selector.drawScoreSelector();
+  if(selector.getEnteredName().length() == 3){
+    endLetters.display();
+  } else {
+    selectLetter.display();  
+  }
+
 }
 
 /*
@@ -576,11 +613,10 @@ void mousePressed() {
     if (mouseX > btnHiscores.bX && mouseX < btnHiscores.bX + btnHiscores.bWidth && mouseY > btnHiscores.bY && mouseY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
     }
-    
+
     if (mouseX > btnInfo.bX && mouseX < btnInfo.bX + btnInfo.bWidth && mouseY > btnInfo.bY && mouseY < btnInfo.bY + btnInfo.bHeight) {
       state = AppState.MOVIE;
       infoMovie.playMovie();
-      
     }
   } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
@@ -633,6 +669,12 @@ void mousePressed() {
       state = AppState.WEBCAM;
       counter = 0;
     }
+  }else if (state == AppState.NEWHISCORE){
+     if (mouseX > endLetters.bX && mouseX < endLetters.bX + endLetters.bWidth && mouseY > endLetters.bY && mouseY < endLetters.bY + endLetters.bHeight) {
+      state = AppState.MAINMENU;
+    } else if (mouseX > selectLetter.bX && mouseX < selectLetter.bX + selectLetter.bWidth && mouseY > selectLetter.bY && mouseY < selectLetter.bY + selectLetter.bHeight) {
+      selector.addLetter();
+    }
   }
 }
 
@@ -668,7 +710,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     if (leapX > btnHiscores.bX && leapX < btnHiscores.bX + btnHiscores.bWidth && leapY > btnHiscores.bY && leapY < btnHiscores.bY + btnHiscores.bHeight) {
       state = AppState.HISCORES;
     }
-    
+
     if (leapX > btnInfo.bX && leapX < btnInfo.bX + btnInfo.bWidth && leapY > btnInfo.bY && leapY < btnInfo.bY + btnInfo.bHeight) {
       state = AppState.MOVIE;
       infoMovie.playMovie();
@@ -723,6 +765,12 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       state = AppState.WEBCAM;
       counter = 0;
     }
+  } else if (state == AppState.NEWHISCORE){
+     if (leapX > endLetters.bX && leapX < endLetters.bX + endLetters.bWidth && leapY > endLetters.bY && leapY < endLetters.bY + endLetters.bHeight) {
+      state = AppState.MAINMENU;
+    } else if (leapX > selectLetter.bX && leapX < selectLetter.bX + selectLetter.bWidth && leapY > selectLetter.bY && leapY < selectLetter.bY + selectLetter.bHeight) {
+      selector.addLetter();
+    }
   }
 }
 
@@ -736,11 +784,29 @@ public void circleGestureRecognized(CircleGesture gesture, String clockwiseness)
   }
 }
 
+public void swipeGestureRecognized(SwipeGesture gesture) {
+
+  if (gesture.state() == State.STATE_STOP) {
+    if (gesture.direction().get(0) <= 0) {
+      selector.setSelectedChar(false);
+    } else {
+      selector.setSelectedChar(true);
+    }
+  }
+  
+}
+
 void keyPressed() {
-  /* 
-   HiscoreEntry e = new HiscoreEntry("JAN", 21000);
-   hh.saveHiscore(e);
-   */
+  if(state == AppState.NEWHISCORE){
+    if(key == BACKSPACE){
+       //remove letter here
+       if(selector.getEnteredName().length() != 0){
+         StringBuilder sb = new StringBuilder(selector.getEnteredName());
+         sb.deleteCharAt(sb.length() - 1);
+         selector.setEnteredName(sb.toString());
+       }
+    }
+  }
 }
 
 void movieEvent(Movie m) {

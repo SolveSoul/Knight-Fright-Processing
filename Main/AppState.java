@@ -7,5 +7,6 @@ public enum AppState{
   HISCORES,
   LEVELTRANSITION,
   SHARE,
-  MOVIE
+  MOVIE,
+  NEWHISCORE
 }

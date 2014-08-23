@@ -72,7 +72,8 @@ class LeapButton {
 
   public void display() {
     textAlign(CENTER);
-
+    textSize(30);
+    
     if (isSelected) {
       stroke(strokeColor);
       strokeWeight(strokeThickness);
