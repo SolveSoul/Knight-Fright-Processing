@@ -120,5 +120,24 @@ class HiscoreHandler {
     Collections.reverse(this.entries);
   }
   
+  public boolean isHiscore(int score){
+    
+    //if the list is shorter than 10 entries, save the hiscore
+    if(this.entries.size() <= 9){
+      return true;
+    }
+    
+    //get the latest entry and check whether or not it is higher than the new score
+    HiscoreEntry entry = entries.get(entries.size() - 1);
+    if(entry.getScore() < score){
+      return true;
+    }
+    
+    //return false if none of the above was true
+    return false;
+
+  }
+  
+  
 }
 

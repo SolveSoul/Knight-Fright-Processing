@@ -88,6 +88,7 @@ void setup() {
   //general settings
   size(640, 480);
   noStroke();
+
   imgBack = loadImage("menuBackground.png");
   imgTransition = loadImage("transition.png");
   imgGameBack = loadImage("gameBackground.png");
@@ -139,8 +140,8 @@ void setup() {
 
   //new hiscore init
   selector = new LeapScoreSelector();
-  selectLetter = new LeapButton(width/2 - 200, height/2 + 150, 100, 50, "OK");
-  endLetters = new LeapButton(width/2 - 100, height/2 + 150, 100, 50, "END");
+  selectLetter = new LeapButton(width/2 +155, height/2 + 90, 155, 50, "PICK LETTER");
+  endLetters = new LeapButton(width/2 +155, height/2 + 140, 155, 50, "SAVE");
 }
 
 void draw() {
@@ -217,25 +218,11 @@ void drawGame() {
 
   //Change appstate when lives equals zero
   if (lives == 0) {
-    state = AppState.GAMEOVER;
 
-    //save the score when it's a hiscore
-    HiscoreEntry entry = null;
-
-    if (scores.size() != 0) {
-      entry = scores.get(scores.size() - 1);
+    if (hh.isHiscore(pointCounter)) {
+      state = AppState.NEWHISCORE;
     } else {
-      entry = new HiscoreEntry("", pointCounter);
-    }   
-
-    if (scores.size() <= 10) {
-      if (pointCounter > entry.getScore()) {
-        hh.saveHiscore(new HiscoreEntry("AXE", pointCounter));
-      }
-    } else {
-      if (pointCounter > entry.getScore()) {
-        hh.saveHiscore(new HiscoreEntry("AXE", pointCounter));
-      }
+      state = AppState.GAMEOVER;
     }
   }
 
@@ -378,12 +365,11 @@ void drawNewHiscore() {
   background(imgHiscores);
 
   selector.drawScoreSelector();
-  if(selector.getEnteredName().length() == 3){
+  if (selector.getEnteredName().length() == 3) {
     endLetters.display();
   } else {
-    selectLetter.display();  
+    selectLetter.display();
   }
-
 }
 
 /*
@@ -668,11 +654,13 @@ void mousePressed() {
       state = AppState.WEBCAM;
       counter = 0;
     }
-  }else if (state == AppState.NEWHISCORE){
-     if (mouseX > endLetters.bX && mouseX < endLetters.bX + endLetters.bWidth && mouseY > endLetters.bY && mouseY < endLetters.bY + endLetters.bHeight) {
-      state = AppState.MAINMENU;
+  } else if (state == AppState.NEWHISCORE) {
+    if (mouseX > endLetters.bX && mouseX < endLetters.bX + endLetters.bWidth && mouseY > endLetters.bY && mouseY < endLetters.bY + endLetters.bHeight && selector.getEnteredName().length() == 3) {
+      state = AppState.GAMEOVER;
+      HiscoreEntry newEntry = new HiscoreEntry(selector.getEnteredName(), pointCounter);
+      hh.saveHiscore(newEntry);
     } else if (mouseX > selectLetter.bX && mouseX < selectLetter.bX + selectLetter.bWidth && mouseY > selectLetter.bY && mouseY < selectLetter.bY + selectLetter.bHeight) {
-      selector.addLetter();
+        selector.addLetter();
     }
   }
 }
@@ -764,11 +752,13 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
       state = AppState.WEBCAM;
       counter = 0;
     }
-  } else if (state == AppState.NEWHISCORE){
-     if (leapX > endLetters.bX && leapX < endLetters.bX + endLetters.bWidth && leapY > endLetters.bY && leapY < endLetters.bY + endLetters.bHeight) {
-      state = AppState.MAINMENU;
+  } else if (state == AppState.NEWHISCORE) {
+    if (leapX > endLetters.bX && leapX < endLetters.bX + endLetters.bWidth && leapY > endLetters.bY && leapY < endLetters.bY + endLetters.bHeight && selector.getEnteredName().length() == 3) {
+      state = AppState.GAMEOVER;
+      HiscoreEntry newEntry = new HiscoreEntry(selector.getEnteredName(), pointCounter);
+      hh.saveHiscore(newEntry);
     } else if (leapX > selectLetter.bX && leapX < selectLetter.bX + selectLetter.bWidth && leapY > selectLetter.bY && leapY < selectLetter.bY + selectLetter.bHeight) {
-      selector.addLetter();
+        selector.addLetter();
     }
   }
 }
@@ -792,18 +782,17 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
       selector.setSelectedChar(true);
     }
   }
-  
 }
 
 void keyPressed() {
-  if(state == AppState.NEWHISCORE){
-    if(key == BACKSPACE){
-       //remove letter here
-       if(selector.getEnteredName().length() != 0){
-         StringBuilder sb = new StringBuilder(selector.getEnteredName());
-         sb.deleteCharAt(sb.length() - 1);
-         selector.setEnteredName(sb.toString());
-       }
+  if (state == AppState.NEWHISCORE) {
+    if (key == BACKSPACE) {
+      //remove letter here
+      if (selector.getEnteredName().length() != 0) {
+        StringBuilder sb = new StringBuilder(selector.getEnteredName());
+        sb.deleteCharAt(sb.length() - 1);
+        selector.setEnteredName(sb.toString());
+      }
     }
   }
 }

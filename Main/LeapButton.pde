@@ -5,6 +5,7 @@ Custom buttons that'll work with the LeapMotion.
 
 class LeapButton {
 
+  //fields
   private float bWidth;
   private float bHeight;
   private float bX;
@@ -19,7 +20,7 @@ class LeapButton {
   private color strokeColor;
   private PImage icon;
 
-
+  //getters & setters
   public void setLabelColor(color lColor) {
     this.labelColor = lColor;
   }
@@ -70,6 +71,7 @@ class LeapButton {
     this.icon = icon;
   }
 
+  //methods
   public void display() {
     textAlign(CENTER);
     textSize(30);
