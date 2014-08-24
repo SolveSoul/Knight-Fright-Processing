@@ -592,6 +592,7 @@ void mousePressed() {
     //start game button
     if (mouseX > startGame.bX && mouseX < startGame.bX + startGame.bWidth && mouseY > startGame.bY && mouseY < startGame.bY + startGame.bHeight) {
       state = AppState.LEVELTRANSITION;
+      pointCounter = 0;
     }
 
     //check hiscores button
@@ -691,6 +692,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     //start game button
     if (leapX > startGame.bX && leapX < startGame.bX + startGame.bWidth && leapY > startGame.bY && leapY < startGame.bY + startGame.bHeight) {
       state = AppState.LEVELTRANSITION;
+      pointCounter = 0;
     }
 
     //check hiscores button
