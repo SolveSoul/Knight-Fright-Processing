@@ -71,6 +71,7 @@ int counter = 0;
 
 //movie fields
 MoviePlayer infoMovie;
+PImage movieBorder;
 
 //new hiscore fields
 LeapScoreSelector selector;
@@ -93,7 +94,8 @@ void setup() {
   imgTransition = loadImage("transition.png");
   imgGameBack = loadImage("gameBackground.png");
   imgHiscores = loadImage("saveScore.png");
-
+  movieBorder = loadImage("border.png");
+  
   //general inits
   leap = new LeapMotionP5(this);
   leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
@@ -351,9 +353,9 @@ void drawShareMenu(String filename) {
 }
 
 void drawMovie() {
-
+  
   infoMovie.drawMovie();
-
+  image(movieBorder, 0 ,0);
   //if the movie is finished, return to main menu
   if (infoMovie.infoMovie.time() == infoMovie.duration) {
     state = AppState.MAINMENU;
