@@ -124,8 +124,8 @@ void setup() {
   btnNextLevel = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Next level");
   btnRestart = new LeapButton(width/2 - 90, height/2 + 30, 180, 60, "Try again");
   btnShare = new LeapButton(width/2 - 90, height/2 + 100, 180, 60, "Share");
-  btnPicOk = new LeapButton(120, 380, 180, 60, "Share on twitter");
-  btnPicNok = new LeapButton(365, 380, 180, 60, "Take new picture");
+  btnPicOk = new LeapButton(120, 380, 200, 60, "Share on twitter");
+  btnPicNok = new LeapButton(350, 380, 200, 60, "Take new picture");
 
   //leap trail setup
   circlePosition = new PVector(width*0.5, width*0.5);
