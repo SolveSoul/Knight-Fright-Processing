@@ -604,6 +604,7 @@ void mousePressed() {
 
     if (mouseX > btnInfo.bX && mouseX < btnInfo.bX + btnInfo.bWidth && mouseY > btnInfo.bY && mouseY < btnInfo.bY + btnInfo.bHeight) {
       state = AppState.MOVIE;
+      infoMovie = new MoviePlayer(this, "movie.mov");
       infoMovie.playMovie();
     }
   } else if (state == AppState.HISCORES) {
@@ -704,6 +705,7 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
 
     if (leapX > btnInfo.bX && leapX < btnInfo.bX + btnInfo.bWidth && leapY > btnInfo.bY && leapY < btnInfo.bY + btnInfo.bHeight) {
       state = AppState.MOVIE;
+      infoMovie = new MoviePlayer(this, "movie.mov");
       infoMovie.playMovie();
     }
   } else if (state == AppState.HISCORES) {
