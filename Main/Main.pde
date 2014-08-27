@@ -160,6 +160,7 @@ void draw() {
   } else if (state == AppState.GAME) {
     drawGame();
     drawLeapLine();
+    drawMouseLine();
     checkKnightHit();
   } else if (state == AppState.GAMEOVER) {
     drawGameOver();
@@ -428,6 +429,37 @@ void drawLeapLine() {
   }
 }
 
+void drawMouseLine() {
+  if (leap.getPointableList().size() == 0) {
+
+    //trail setup
+    fill(255, 0, 0);
+    noStroke();
+
+    int trailLength;
+
+
+    circlePosition = new PVector(mouseX, mouseY);
+    circleTrail.add(circlePosition);
+
+    trailLength = circleTrail.size() - 2;
+
+    for (int i = 0; i < trailLength; i++) {
+      PVector currentTrail = circleTrail.get(i);
+      PVector previousTrail = circleTrail.get(i + 1);
+
+      stroke(255, 255*i/trailLength);
+      line(currentTrail.x, currentTrail.y, previousTrail.x, previousTrail.y);
+    }
+
+    ellipse(circlePosition.x, circlePosition.y, 10, 10);
+
+    if (trailLength >= trailSize) {
+      circleTrail.remove(0);
+    }
+  }
+}
+
 
 /*
 =================================
@@ -579,7 +611,7 @@ void leapButtonTriggerEvent(float x, float y) {
     }
 
     if (x > btnInfo.bX && x < btnInfo.bX + btnInfo.bWidth && y > btnInfo.bY && y < btnInfo.bY + btnInfo.bHeight) {
-      
+
       if (!infoMovie.isPlaying) {
         infoMovie = new MoviePlayer(this, "movie.mov");
         infoMovie.playMovie();
