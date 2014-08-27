@@ -579,11 +579,12 @@ void leapButtonTriggerEvent(float x, float y) {
     }
 
     if (x > btnInfo.bX && x < btnInfo.bX + btnInfo.bWidth && y > btnInfo.bY && y < btnInfo.bY + btnInfo.bHeight) {
-      state = AppState.MOVIE;
+      
       if (!infoMovie.isPlaying) {
         infoMovie = new MoviePlayer(this, "movie.mov");
         infoMovie.playMovie();
       }
+      state = AppState.MOVIE;
     }
   } else if (state == AppState.HISCORES) {
     //go back to menu from hiscores button 
