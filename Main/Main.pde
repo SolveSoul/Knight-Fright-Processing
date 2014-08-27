@@ -95,7 +95,7 @@ void setup() {
   imgGameBack = loadImage("gameBackground.png");
   imgHiscores = loadImage("saveScore.png");
   movieBorder = loadImage("border.png");
-  
+
   //general inits
   leap = new LeapMotionP5(this);
   leap.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
@@ -353,9 +353,9 @@ void drawShareMenu(String filename) {
 }
 
 void drawMovie() {
-  
+
   infoMovie.drawMovie();
-  image(movieBorder, 0 ,0);
+  image(movieBorder, 0, 0);
   //if the movie is finished, return to main menu
   if (infoMovie.infoMovie.time() == infoMovie.duration) {
     state = AppState.MAINMENU;
@@ -540,6 +540,108 @@ void checkKnightHit() {
   }
 }
 
+void resetGame() {
+  state = AppState.MAINMENU;
+  lives = 3;
+  currentLvl = 1;
+  rectHeight = 180;
+  transcounter = 0;
+  pointCounter = 0;
+  timer = 0;
+}
+
+void leapButtonTriggerEvent(float x, float y) {
+
+  if (state == AppState.MAINMENU) {
+
+    //the most dirty code you'll ever see in your life
+    for (LeapButton l : bGroup) {
+      if (x > l.bX && x < l.bX + l.bWidth && y > l.bY && y < l.bY + l.bHeight) {
+        if (l.getLabelText().toLowerCase().equals("easy")) {
+          changeDifficulty(Difficulty.EASY);
+        } else if (l.getLabelText().toLowerCase().equals("medium")) {
+          changeDifficulty(Difficulty.MEDIUM);
+        } else {
+          changeDifficulty(Difficulty.HARD);
+        }
+      }
+    }
+
+    //start game button
+    if (x > startGame.bX && x < startGame.bX + startGame.bWidth && y > startGame.bY && y < startGame.bY + startGame.bHeight) {
+      state = AppState.LEVELTRANSITION;
+      pointCounter = 0;
+    }
+
+    //check hiscores button
+    if (x > btnHiscores.bX && x < btnHiscores.bX + btnHiscores.bWidth && y > btnHiscores.bY && y < btnHiscores.bY + btnHiscores.bHeight) {
+      state = AppState.HISCORES;
+    }
+
+    if (x > btnInfo.bX && x < btnInfo.bX + btnInfo.bWidth && y > btnInfo.bY && y < btnInfo.bY + btnInfo.bHeight) {
+      state = AppState.MOVIE;
+      if (!infoMovie.isPlaying) {
+        infoMovie = new MoviePlayer(this, "movie.mov");
+        infoMovie.playMovie();
+      }
+    }
+  } else if (state == AppState.HISCORES) {
+    //go back to menu from hiscores button 
+    if (x > btnBackToMenu.bX && x < btnBackToMenu.bX + btnBackToMenu.bWidth && y > btnBackToMenu.bY && y < btnBackToMenu.bY + btnBackToMenu.bHeight) {
+      state = AppState.MAINMENU;
+    }
+  } else if (state == AppState.LEVELCOMPLETE) {
+    if (x > btnNextLevel.bX && x < btnNextLevel.bX + btnNextLevel.bWidth && y > btnNextLevel.bY && y < btnNextLevel.bY + btnNextLevel.bHeight) {
+
+      lives = 3;
+      currentLvl++;
+      rectHeight = 180;
+      transcounter = 0;
+      timer = 0;
+
+      if (appearanceTime != 0 || appearanceTime > 0) {
+        if (this.diff == Difficulty.EASY) {
+          appearanceTime= appearanceTime - 300;
+        } else if (this.diff == Difficulty.MEDIUM) {
+          appearanceTime= appearanceTime - 150;
+        } else {
+          appearanceTime= appearanceTime - 50;
+        }
+      } else {
+        appearanceTime = 100;
+      }
+
+      state = AppState.LEVELTRANSITION;
+    }
+  } else if (state == AppState.GAMEOVER) {
+    //go back to menu 
+    if (x > btnRestart.bX && x < btnRestart.bX + btnRestart.bWidth && y > btnRestart.bY && y < btnRestart.bY + btnRestart.bHeight) {
+      resetGame();
+    } else if (x > btnShare.bX && x < btnShare.bX + btnShare.bWidth && y > btnShare.bY && y < btnShare.bY + btnShare.bHeight) {
+      state = AppState.WEBCAM;
+    }
+  } else if (state == AppState.SHARE) {
+    if (x > btnPicOk.bX && x < btnPicOk.bX + btnPicOk.bWidth && y > btnPicOk.bY && y < btnPicOk.bY + btnPicOk.bHeight) {
+      //tweet the image
+      Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
+      tweet.start();
+      resetGame();
+      state = AppState.MAINMENU;
+    } else if (x > btnPicNok.bX && x < btnPicNok.bX + btnPicNok.bWidth && y > btnPicNok.bY && y < btnPicNok.bY + btnPicNok.bHeight) {
+      state = AppState.WEBCAM;
+      counter = 0;
+    }
+  } else if (state == AppState.NEWHISCORE) {
+    if (x > endLetters.bX && x < endLetters.bX + endLetters.bWidth && y > endLetters.bY && y < endLetters.bY + endLetters.bHeight && selector.getEnteredName().length() == 3) {
+      state = AppState.GAMEOVER;
+      HiscoreEntry newEntry = new HiscoreEntry(selector.getEnteredName(), pointCounter);
+      hh.saveHiscore(newEntry);
+    } else if (x > selectLetter.bX && x < selectLetter.bX + selectLetter.bWidth && y > selectLetter.bY && y < selectLetter.bY + selectLetter.bHeight) {
+      selector.addLetter();
+    }
+  }
+}
+
 /*
 =================================
  Processing + leap events
@@ -573,104 +675,11 @@ void mouseDragged() {
   }
 }
 
-
 void mousePressed() {
-
-  if (state == AppState.MAINMENU) {
-
-    //the most dirty code you'll ever see in your life
-    for (LeapButton l : bGroup) {
-      if (mouseX > l.bX && mouseX < l.bX + l.bWidth && mouseY > l.bY && mouseY < l.bY + l.bHeight) {
-        if (l.getLabelText().toLowerCase().equals("easy")) {
-          changeDifficulty(Difficulty.EASY);
-        } else if (l.getLabelText().toLowerCase().equals("medium")) {
-          changeDifficulty(Difficulty.MEDIUM);
-        } else {
-          changeDifficulty(Difficulty.HARD);
-        }
-      }
-    }
-
-    //start game button
-    if (mouseX > startGame.bX && mouseX < startGame.bX + startGame.bWidth && mouseY > startGame.bY && mouseY < startGame.bY + startGame.bHeight) {
-      state = AppState.LEVELTRANSITION;
-      pointCounter = 0;
-    }
-
-    //check hiscores button
-    if (mouseX > btnHiscores.bX && mouseX < btnHiscores.bX + btnHiscores.bWidth && mouseY > btnHiscores.bY && mouseY < btnHiscores.bY + btnHiscores.bHeight) {
-      state = AppState.HISCORES;
-    }
-
-    if (mouseX > btnInfo.bX && mouseX < btnInfo.bX + btnInfo.bWidth && mouseY > btnInfo.bY && mouseY < btnInfo.bY + btnInfo.bHeight) {
-      state = AppState.MOVIE;
-      infoMovie = new MoviePlayer(this, "movie.mov");
-      infoMovie.playMovie();
-    }
-  } else if (state == AppState.HISCORES) {
-    //go back to menu from hiscores button 
-    if (mouseX > btnBackToMenu.bX && mouseX < btnBackToMenu.bX + btnBackToMenu.bWidth && mouseY > btnBackToMenu.bY && mouseY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
-      state = AppState.MAINMENU;
-    }
-  } else if (state == AppState.LEVELCOMPLETE) {
-    if (mouseX > btnNextLevel.bX && mouseX < btnNextLevel.bX + btnNextLevel.bWidth && mouseY > btnNextLevel.bY && mouseY < btnNextLevel.bY + btnNextLevel.bHeight) {
-
-      lives = 3;
-      currentLvl++;
-      rectHeight = 180;
-      transcounter = 0;
-      timer = 0;
-
-      if (appearanceTime != 0 || appearanceTime > 0) {
-        if (this.diff == Difficulty.EASY) {
-          appearanceTime= appearanceTime - 300;
-        } else if (this.diff == Difficulty.MEDIUM) {
-          appearanceTime= appearanceTime - 150;
-        } else {
-          appearanceTime= appearanceTime - 50;
-        }
-      } else {
-        appearanceTime = 100;
-      }
-
-      state = AppState.LEVELTRANSITION;
-    }
-  } else if (state == AppState.GAMEOVER) {
-    //go back to menu 
-    if (mouseX > btnRestart.bX && mouseX < btnRestart.bX + btnRestart.bWidth && mouseY > btnRestart.bY && mouseY < btnRestart.bY + btnRestart.bHeight) {
-      state = AppState.MAINMENU;
-      lives = 3;
-      currentLvl = 1;
-      rectHeight = 180;
-      transcounter = 0;
-      pointCounter = 0;
-      timer = 0;
-    } else if (mouseX > btnShare.bX && mouseX < btnShare.bX + btnShare.bWidth && mouseY > btnShare.bY && mouseY < btnShare.bY + btnShare.bHeight) {
-      state = AppState.WEBCAM;
-    }
-  } else if (state == AppState.SHARE) {
-    if (mouseX > btnPicOk.bX && mouseX < btnPicOk.bX + btnPicOk.bWidth && mouseY > btnPicOk.bY && mouseY < btnPicOk.bY + btnPicOk.bHeight) {
-      //tweet the image
-      Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
-      tweet.start();
-      state = AppState.MAINMENU;
-    } else if (mouseX > btnPicNok.bX && mouseX < btnPicNok.bX + btnPicNok.bWidth && mouseY > btnPicNok.bY && mouseY < btnPicNok.bY + btnPicNok.bHeight) {
-      state = AppState.WEBCAM;
-      counter = 0;
-    }
-  } else if (state == AppState.NEWHISCORE) {
-    if (mouseX > endLetters.bX && mouseX < endLetters.bX + endLetters.bWidth && mouseY > endLetters.bY && mouseY < endLetters.bY + endLetters.bHeight && selector.getEnteredName().length() == 3) {
-      state = AppState.GAMEOVER;
-      HiscoreEntry newEntry = new HiscoreEntry(selector.getEnteredName(), pointCounter);
-      hh.saveHiscore(newEntry);
-    } else if (mouseX > selectLetter.bX && mouseX < selectLetter.bX + selectLetter.bWidth && mouseY > selectLetter.bY && mouseY < selectLetter.bY + selectLetter.bHeight) {
-        selector.addLetter();
-    }
-  }
+  leapButtonTriggerEvent(mouseX, mouseY);
 }
 
 public void screenTapGestureRecognized(ScreenTapGesture gesture) {
-
   float leapX = gesture.position().getX();
   float leapY = gesture.position().getY();
 
@@ -679,94 +688,8 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     leapX = position.x;
     leapY = position.y;
   }
-  if (state == AppState.MAINMENU) {
-    for (LeapButton l : bGroup) {
-      if (leapX > l.bX && leapX < (l.bX + l.bWidth) && leapY > l.bY && leapY < (l.bY + l.bHeight)) {
-        if (l.getLabelText().toLowerCase().equals("easy")) {
-          changeDifficulty(Difficulty.EASY);
-        } else if (l.getLabelText().toLowerCase().equals("medium")) {
-          changeDifficulty(Difficulty.MEDIUM);
-        } else {
-          changeDifficulty(Difficulty.HARD);
-        }
-      }
-    }
 
-    //start game button
-    if (leapX > startGame.bX && leapX < startGame.bX + startGame.bWidth && leapY > startGame.bY && leapY < startGame.bY + startGame.bHeight) {
-      state = AppState.LEVELTRANSITION;
-      pointCounter = 0;
-    }
-
-    //check hiscores button
-    if (leapX > btnHiscores.bX && leapX < btnHiscores.bX + btnHiscores.bWidth && leapY > btnHiscores.bY && leapY < btnHiscores.bY + btnHiscores.bHeight) {
-      state = AppState.HISCORES;
-    }
-
-    if (leapX > btnInfo.bX && leapX < btnInfo.bX + btnInfo.bWidth && leapY > btnInfo.bY && leapY < btnInfo.bY + btnInfo.bHeight) {
-      state = AppState.MOVIE;
-      infoMovie = new MoviePlayer(this, "movie.mov");
-      infoMovie.playMovie();
-    }
-  } else if (state == AppState.HISCORES) {
-    //go back to menu from hiscores button 
-    if (leapX > btnBackToMenu.bX && leapX < btnBackToMenu.bX + btnBackToMenu.bWidth && leapY > btnBackToMenu.bY && leapY < btnBackToMenu.bY + btnBackToMenu.bHeight) {
-      state = AppState.MAINMENU;
-    }
-  } else if (state == AppState.LEVELCOMPLETE) {
-    if (leapX > btnNextLevel.bX && leapX < btnNextLevel.bX + btnNextLevel.bWidth && leapY > btnNextLevel.bY && leapY < btnNextLevel.bY + btnNextLevel.bHeight) {
-
-      lives = 3;
-      currentLvl++;
-      rectHeight = 180;
-      transcounter = 0;
-      timer = 0;
-
-      if (appearanceTime != 0 || appearanceTime > 0) {
-        if (this.diff == Difficulty.EASY) {
-          appearanceTime= appearanceTime - 300;
-        } else if (this.diff == Difficulty.MEDIUM) {
-          appearanceTime= appearanceTime - 150;
-        } else {
-          appearanceTime= appearanceTime - 50;
-        }
-      } else {
-        appearanceTime = 100;
-      }
-
-      state = AppState.LEVELTRANSITION;
-    }
-  } else if (state == AppState.GAMEOVER) {
-    //go back to menu 
-    if (leapX > btnRestart.bX && leapX < btnRestart.bX + btnRestart.bWidth && leapY > btnRestart.bY && leapY < btnRestart.bY + btnRestart.bHeight) {
-      state = AppState.MAINMENU;
-      lives = 3;
-      currentLvl = 1;
-      rectHeight = 180;
-      transcounter = 0;
-      timer = 0;
-    } else if (leapX > btnShare.bX && leapX < btnShare.bX + btnShare.bWidth && leapY > btnShare.bY && leapY < btnShare.bY + btnShare.bHeight) {
-      state = AppState.WEBCAM;
-    }
-  } else if (state == AppState.SHARE) {
-    if (leapX > btnPicOk.bX && leapX < btnPicOk.bX + btnPicOk.bWidth && leapY > btnPicOk.bY && leapY < btnPicOk.bY + btnPicOk.bHeight) {
-      //tweet the image
-      Thread tweet = new Thread(new TwitterHandler(pointCounter, filename));
-      tweet.start();
-      state = AppState.MAINMENU;
-    } else if (leapX > btnPicNok.bX && leapX < btnPicNok.bX + btnPicNok.bWidth && leapY > btnPicNok.bY && leapY < btnPicNok.bY + btnPicNok.bHeight) {
-      state = AppState.WEBCAM;
-      counter = 0;
-    }
-  } else if (state == AppState.NEWHISCORE) {
-    if (leapX > endLetters.bX && leapX < endLetters.bX + endLetters.bWidth && leapY > endLetters.bY && leapY < endLetters.bY + endLetters.bHeight && selector.getEnteredName().length() == 3) {
-      state = AppState.GAMEOVER;
-      HiscoreEntry newEntry = new HiscoreEntry(selector.getEnteredName(), pointCounter);
-      hh.saveHiscore(newEntry);
-    } else if (leapX > selectLetter.bX && leapX < selectLetter.bX + selectLetter.bWidth && leapY > selectLetter.bY && leapY < selectLetter.bY + selectLetter.bHeight) {
-        selector.addLetter();
-    }
-  }
+  leapButtonTriggerEvent(leapX, leapY);
 }
 
 public void circleGestureRecognized(CircleGesture gesture, String clockwiseness) {
@@ -781,11 +704,13 @@ public void circleGestureRecognized(CircleGesture gesture, String clockwiseness)
 
 public void swipeGestureRecognized(SwipeGesture gesture) {
 
-  if (gesture.state() == State.STATE_STOP) {
-    if (gesture.direction().get(0) <= 0) {
-      selector.setSelectedChar(false);
-    } else {
-      selector.setSelectedChar(true);
+  if (state == AppState.NEWHISCORE) {
+    if (gesture.state() == State.STATE_STOP) {
+      if (gesture.direction().get(0) <= 0) {
+        selector.setSelectedChar(false);
+      } else {
+        selector.setSelectedChar(true);
+      }
     }
   }
 }
