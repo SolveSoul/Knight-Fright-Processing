@@ -383,11 +383,13 @@ void drawNewHiscore() {
 
 void drawLeapCursor() {
   fill(255, 0, 0);
+  stroke(255, 255, 255);
   for (Pointable p : leap.getPointableList ()) {
     PVector position = leap.getTip(p);
-    ellipse(position.x, position.y, 20, 20);
+    ellipse(position.x, position.y, 10, 10);
     break;
   }
+  noStroke();
 }
 
 void drawLeapLine() {
